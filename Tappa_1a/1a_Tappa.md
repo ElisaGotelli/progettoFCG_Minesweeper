@@ -7,7 +7,7 @@ Impostazione della grafica base (sfondo e bordo) della finestra e definizione de
 Rispetto alla tappa precedente:
 - è stato impostato un nuovo colore di sfondo per la finestra (verde chiaro)
 - è stato aggiunto un bordo alla finestra tramite la creazione di una RectangleShape
-- sono state definite le struct (con le loro funzioni draw() e i loro costruttori) per rappresentare la griglia (Grid), le celle (Cell), il pannello di gioco (Game Panel) e lo stato complessivo della finestra (State).
+- sono state definite le struct (con le loro funzioni draw() e i loro costruttori) per rappresentare la griglia (Grid); le celle (Cell); il pannello di gioco (Game Panel); lo stato complessivo della finestra (State).
 
 ## ISTRUZIONI PER ESEGUIRE DA TERMINALE: 
 Prima di poter scrivere questo comando su terminale, bisogna aver: 

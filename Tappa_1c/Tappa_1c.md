@@ -7,10 +7,11 @@ Rendere la versione base del gioco completa e realmente giocabile, cioè:
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente:
-- è stata definita la struct (con la sua funzione draw() e costruttore) per rappresentare il pannello di fine partita (Stop_Panel)
-- è stata definita una nuova funzione handle per la gestione dell'evento del premere il pulsante SPACE sulla tastiera (reset di una partita)
+- è stata definita la struct (con la sua funzione draw() e costruttore) per rappresentare il pannello di fine partita (Stop_Panel).
+- è stata definita una nuova funzione handle per la gestione dell'evento del premere il pulsante SPACE sulla tastiera (reset di una partita).
 - sono state modificate le funzioni handle di click di un pulsante del mouse e movimento del mouse per fare in modo che non venga eseguita nessuna attività quando il nuovo Stop Panel è visibile
-- sono stati definiti e modificati diversi parametri e funzioni a tutte le struct e costanti globali nel codice per gestire correttamente le nuove funzionalità e grafiche di gioco. Ad esempio per gestire la rivelazione finale delle mine dopo la fine di una partita (ending_reveal). 
+- sono stati definiti e modificati diversi parametri e funzioni all'interno di  tutte le struct nel codice e definite nuove costanti globali per gestire correttamente le nuove funzionalità e grafiche di gioco. Ad esempio per gestire la rivelazione finale delle mine dopo la fine di una partita (ending_reveal). 
+- è stato aggiunto lo Stop Panel alla struct State.
 
 ## ISTRUZIONI PER ESEGUIRE DA TERMINALE: 
 Prima di poter scrivere questo comando su terminale, bisogna aver: 

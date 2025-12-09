@@ -1,0 +1,1258 @@
+#include <SFML/Graphics.hpp>
+#include <vector> 
+#include <string>
+#include <cstdlib> 
+#include <ctime> 
+#include <cmath>
+#include <SFML/System/Clock.hpp>
+#include "../risorse/textures_fonts.hpp"
+
+using namespace std; 
+
+////////////////FINESTRA////////////////
+const char* window_title = "Levels";
+const unsigned window_width = 800; 
+const unsigned window_height = 600;  
+const float max_frame_rate = 60; 
+const float window_horizontal_displacement = 50; 
+const float window_vertical_displacement = 50; 
+sf::Color window_background_color = sf::Color(144, 238, 144); 
+
+////////////////BORDO FINESTRA////////////////
+
+const float window_border_thickness = 15; 
+sf::Color window_border_color = sf::Color(0, 100, 0);
+
+////////////////TESTO GENERALE////////////////
+
+const unsigned font_size_mine_title = 80;
+sf::Color text_color = sf::Color::Black;
+sf::Color text_border_color = sf::Color::White;
+const float text_thickness = 2; 
+
+////////////////PANNELLI GENERALE////////////////
+
+sf::Color panel_background_color = sf::Color(210,180,140);
+sf::Color panel_border_color = sf::Color(92,51,23); 
+sf::Color focus_color = sf::Color::Red; 
+const float panel_thickness = 15;
+
+////////////////CELLA////////////////
+
+enum class cell_type{Mine,Empty, Number}; 
+enum class cell_state{ Covered, Revealed, Flag}; 
+
+////////////////HEADER////////////////
+
+const float header_grid_proportion = 1.7; //AGGIUNTA: proporzione tra griglia e header in altezza
+const float header_parameter_gap = 30;
+const float header_border_thickness = 5; 
+sf::Color header_background_color = sf::Color(192, 192, 192); 
+sf::Color header_border_color = sf::Color::Black;
+
+////////////////GAME PANEL////////////////
+
+const float starting_gap = 2; //AGGIUNTA: gap tra le celle per la modalità EASY
+const float starting_cell_size =(((window_width - (window_horizontal_displacement * 3))/2) - (starting_gap * 9)) / 10; //AGGIUNTA: dimensione delle celle nella modalità easy
+
+////////////////STOP PANEL////////////////
+
+const float stop_width = (window_width/3)*2;
+const float stop_height = (window_height/3)*2;
+const float stop_pos_x = window_width/6; 
+const float stop_pos_y = window_height/6; 
+const float stop_cb_width = stop_width/4;
+const float stop_cb_height = stop_height/6;
+const float stop_gap = 25; 
+enum class stop_type{None, Win, Lose, Pause, New_Game}; //MODIFICATO: aggiunto il nuovo tipo di Stop Panel per la scelta della difficoltà della prossima partita
+const unsigned stop_title_size = 90; 
+const unsigned stop_title2_size = 40; //AGGIUNTA: dimensione del testo dello Stop Panel di tipo New Game
+const unsigned stop_subtitle_size = 30;
+const unsigned stop_subtitle2_size = 20;
+const unsigned stop_time_text_size = 15;
+sf::Color stop_time_text_color = sf::Color::Red;
+
+////////////////CONTROL BUTTON////////////////
+
+enum class button_type{new_game, pause, easy, medium, hard}; //MODIFICATO: aggiunti i tre tipi dei pulsanti corrispondenti ai tre possibili livelli di difficoltà 
+float button_border_thickness = 5; 
+sf::Color button_color = sf::Color(192, 192, 192);
+sf::Color button_border_color = sf::Color::Black;
+const float button_text_thickness = 1.5;
+const float button_text_proportion =3.5;
+
+////////////////CONTROL PANEL////////////////
+
+const float control_button_horizontal_displacement = 20;
+const float control_button_vertical_displacement = 20;
+
+////////////////START PANEL////////////////
+
+const float start_width = (window_width/4)*3;
+const float start_height = (window_height/4)*3;
+const float start_pos_x = window_width/8;
+const float start_pos_y = window_height/8;
+const float start_gap =25;
+const unsigned start_size_subtitle = 30;
+const unsigned start_size_text = 17;
+const float start_cb_width = start_width/5;
+const float start_cb_height = start_height/6;
+
+
+////////////////STATE////////////////
+
+enum class Difficulty{easy, medium,hard}; //AGGIUNTA: tipi di difficoltà possibili in gioco
+
+////////////////STRUCT////////////////
+
+struct Cell
+{
+    sf::Vector2f cell_pos; 
+    float cell_size; 
+    int row_index, column_index;
+    sf::FloatRect cell_bounds; 
+    bool cell_mouse_focus; 
+    sf::Texture* cell_texture;
+    cell_type cell_type; 
+    int mine_adj; 
+    cell_state cell_state;
+    float cell_gap;
+
+
+    Cell (sf::Vector2f pos, float size, int column_index, int row_index, float gap) : 
+                                            cell_pos (pos),
+                                            cell_size (size),
+                                            row_index(row_index),
+                                            column_index(column_index),
+                                            cell_bounds (cell_pos, {cell_size, cell_size}),
+                                            cell_mouse_focus(false),
+                                            cell_texture (&Covered_texture), 
+                                            cell_type(cell_type::Empty), 
+                                            mine_adj(0), 
+                                            cell_state(cell_state::Covered),
+                                            cell_gap(gap) {}
+    void draw (sf::RenderWindow& window); 
+};
+
+struct Grid
+{
+    std::vector<Cell> cells; 
+    sf::Vector2i cell_num; 
+    sf::Vector2f Grid_pos; 
+    sf::Vector2f Grid_size; 
+    int mine_num;
+    int num_revealed; 
+
+    Grid (sf::Vector2i cell_num, int mine_num, float& cell_size, float gap);
+    void place_mines(int starting_index_cell); 
+    void place_numbers(); 
+    void draw (sf::RenderWindow& window);
+};
+
+struct Number{
+    sf::Vector2f num_pos;
+    sf::Vector2f num_size;
+    sf::Texture* num_texture;
+
+    Number(sf::Vector2f pos, sf::Vector2f size): 
+                                                num_pos(pos), 
+                                                num_size(size), 
+                                                num_texture(&Clock_textures[0]) {}
+
+    void draw (sf::RenderWindow& window);
+    
+};
+
+struct Timer
+{
+    vector<Number> timer_numbers;
+    sf::Vector2f timer_pos;
+    sf::Vector2f timer_size;
+    int real_timer;
+    float acc;
+    bool isRunning;
+
+    Timer(sf::Vector2f header_pos, float cell_size, float pos_y, sf::Vector2f size);
+    void update(float elapsed);
+    void draw (sf::RenderWindow& window);
+}; 
+
+struct Face
+{
+    sf::Vector2f face_pos; 
+    sf::Vector2f face_size; 
+    sf::Texture* face_texture;
+
+    Face(sf::Vector2f header_pos, sf::Vector2f header_size, float cell_size, float pos_y, float size): 
+                                                                                                        face_pos({(header_pos.x+ (header_size.x/2))- (size/2), pos_y}),
+                                                                                                        face_size({size,size}), 
+                                                                                                        face_texture(&smile_face_texture)
+                                                                                                        {} 
+
+    void draw (sf::RenderWindow& window);
+};
+
+struct Flag_Counter
+{
+    vector<Number> flag_numbers; 
+    sf::Vector2f flag_pos; 
+    sf::Vector2f flag_size; 
+    int num_flag;
+
+    Flag_Counter(sf::Vector2f header_pos, sf::Vector2f header_size, float cell_size, float pos_y, sf::Vector2f size, int mine_num);
+    void set_number(bool flag_placed);
+    void draw (sf::RenderWindow& window);
+}; 
+
+struct Header
+{
+    sf::Vector2f h_size;
+    sf::Vector2f h_pos;
+    float details_pos_y;
+    sf::Vector2f details_size;
+    Timer timer;
+    Face face;
+    Flag_Counter f_counter;
+
+    Header(float cell_size, Grid& grid, int mine_num): 
+                                        h_size({ grid.Grid_size.x - (header_border_thickness*2), (starting_cell_size*header_grid_proportion) - (header_border_thickness*2)}), //MODIFICATO: l'header non sarà più un quarto della griglia come altezza ma la grandezza di una cella della modalità easy per un valore costante di proporzione
+                                        h_pos({ grid.Grid_pos.x + header_border_thickness, grid.Grid_pos.y - (starting_cell_size*header_grid_proportion) + header_border_thickness }), //MODIFICATO: modificato per lo stesso motivo spiegato prima 
+                                        details_pos_y(h_pos.y + (h_size.y/6)),
+                                        details_size({(h_size.y - (h_size.y/3))*3/2, h_size.y - (h_size.y/3)}), 
+                                        timer(h_pos, starting_cell_size, details_pos_y, details_size), //MODIFICATO: verrà sempre utilizzata la cell_size della modalità easy per la sua costruzione
+                                        face(h_pos, h_size, starting_cell_size, details_pos_y, details_size.y), //MODIFICATO: verrà sempre utilizzata la cell_size della modalità easy per la sua costruzione
+                                        f_counter(h_pos, h_size, starting_cell_size, details_pos_y, details_size, mine_num) //MODIFICATO: verrà sempre utilizzata la cell_size della modalità easy per la sua costruzione
+                                         {}
+    void draw (sf::RenderWindow& window);
+};
+
+
+struct Border_Cell
+{
+    sf::Vector2f border_cell_pos;
+    sf::Vector2f border_cell_size;
+    sf::Texture* border_cell_texture;
+
+    Border_Cell(sf::Vector2f pos, sf::Vector2f size, sf::Texture* texture): 
+                                                                            border_cell_pos(pos),
+                                                                            border_cell_size(size), 
+                                                                            border_cell_texture(texture) {}
+    void draw (sf::RenderWindow& window);
+};
+
+struct Border
+{ 
+    vector<Border_Cell> angle_cells;
+    vector<Border_Cell> side_cells;
+
+    sf::Vector2f b_size;
+    sf::Vector2f b_pos;
+    float thickness;
+
+    Border(float cell_size, Grid& grid, Header& header, float gap); 
+    void draw (sf::RenderWindow& window);
+}; 
+
+struct Game_Panel
+{
+    float gap; 
+    float cell_size; 
+    Grid grid;
+    Header header;
+    Border border;
+
+    Game_Panel(sf::Vector2i cell_num, int mine_num, float gap): //MODIFICATO: il gap non avrà più un valore fisso ma dipenderà dalla difficoltà scelta e quindi deve essere passato come parametro
+                                        gap(gap),
+                                        cell_size((((window_width - (window_horizontal_displacement * 3))/2) - (gap * (cell_num.x - 1))) / (cell_num.x + 1)),
+                                        grid(cell_num, mine_num, cell_size, gap),
+                                        header(cell_size, grid, mine_num),
+                                        border(cell_size, grid, header, gap)
+                                        {} 
+    void draw (sf::RenderWindow& window);
+};
+
+struct Control_Button
+{
+    sf::Vector2f cb_pos;
+    sf::Vector2f cb_size;
+    sf::Text cb_text;
+    sf::FloatRect cb_bounds;
+    button_type cb_type;
+    bool mouse_focus;
+ 
+    Control_Button(button_type type, sf::Vector2f pos, sf::Vector2f size) : 
+                                                                            cb_pos(pos), 
+                                                                            cb_size(size), 
+                                                                            cb_text{font},
+                                                                            cb_bounds(cb_pos, cb_size), 
+                                                                            cb_type(type),
+                                                                            mouse_focus(false) {} 
+    void draw (sf::RenderWindow& window);
+}; 
+
+struct Control_Panel 
+{
+    sf::Vector2f cp_size;
+    sf::Vector2f cp_pos;
+    sf::Vector2f button_size;
+    Control_Button pause;
+    Control_Button new_game;
+
+    Control_Panel(Border border): 
+                                    cp_size({border.b_size.x -(border.thickness *2), border.b_size.y -(border.thickness *2)}),
+                                    cp_pos(window_horizontal_displacement + panel_thickness, border.b_pos.y + border.thickness),
+                                    button_size({(cp_size.x-(control_button_horizontal_displacement*2))/3, (cp_size.y-(control_button_vertical_displacement*2))/8}),
+                                    new_game(button_type::new_game, {cp_pos.x + control_button_horizontal_displacement, cp_pos.y + control_button_vertical_displacement}, button_size),
+                                    pause(button_type::pause, {cp_pos.x +cp_size.x - control_button_horizontal_displacement - button_size.x, cp_pos.y + control_button_vertical_displacement}, button_size)
+                                    {}
+
+    void draw (sf::RenderWindow& window);
+};
+
+struct Stop_Panel{ 
+    sf::Text title{font}; 
+    stop_type stop_type; 
+    sf::Vector2f stop_size;
+    sf::Vector2f stop_pos;
+    bool visible;
+    int time;
+    Control_Button new_game_cb, easy_cb, medium_cb, hard_cb; //AGGIUNTA: aggiunti i tre pulsanti per le tre difficoltà di gioco che verranno mostrati solamente quando lo Stop Panel ha tipo New Game
+    
+    Stop_Panel (): 
+                visible(false),
+                stop_type(stop_type::None), 
+                stop_size({stop_width, stop_height}), 
+                stop_pos({stop_pos_x,stop_pos_y}),
+                time(0), 
+                new_game_cb(button_type::new_game,{stop_pos.x+ stop_size.x/2 - stop_cb_width/2, stop_pos.y + stop_size.y - stop_gap - stop_cb_height}, {stop_cb_width, stop_cb_height}),
+                easy_cb(button_type::easy, {stop_pos.x + stop_gap*2, stop_pos.y + stop_size.y*3/4 -stop_cb_height/2}, {stop_cb_width, stop_cb_height}), //AGGIUNTA
+                medium_cb(button_type::medium, {stop_pos.x+ stop_size.x/2 - stop_cb_width/2, easy_cb.cb_pos.y}, {stop_cb_width, stop_cb_height}), //AGGIUNTA
+                hard_cb(button_type::hard, {stop_pos.x+ stop_size.x - stop_gap*2 - stop_cb_width, easy_cb.cb_pos.y}, {stop_cb_width, stop_cb_height}) //AGGIUNTA 
+                {}
+
+    void draw (sf::RenderWindow& window);
+};
+
+struct Start_Panel
+{
+    sf::Vector2f start_size;
+    sf::Vector2f start_pos;
+    sf::Text start_title{font};
+    Control_Button easy_cb, medium_cb, hard_cb; //AGGIUNTA: aggiunti i pulsanti delle tre difficoltà di gioco per poter scegliere fin da subito la difficoltà della partita
+    bool visible;
+
+    //AGGIUNTA: i tre nuovi pulsanti sono posizionati in fondo allo Start Panel
+    Start_Panel (): 
+                    start_size({start_width, start_height}), 
+                    start_pos({start_pos_x, start_pos_y}),
+                    easy_cb(button_type::easy, {start_pos.x+start_cb_width/2, start_pos.y+start_size.y/2 + start_cb_height}, {start_cb_width, start_cb_height}),
+                    medium_cb(button_type::medium,{easy_cb.cb_pos.x+(start_cb_width*1.5f), easy_cb.cb_pos.y}, {start_cb_width, start_cb_height}), 
+                    hard_cb(button_type::hard,{easy_cb.cb_pos.x+(start_cb_width*3), easy_cb.cb_pos.y}, {start_cb_width, start_cb_height}),
+                    visible(true) {}
+    void draw (sf::RenderWindow& window);
+};
+
+struct State 
+{
+    Difficulty diff; //AGGIUNTA: difficoltà della partita in corso
+    Start_Panel sp;
+    Game_Panel game_panel;
+    Stop_Panel stop_p; 
+    Control_Panel cp;
+    int mouse_cell;
+    bool focus; 
+    bool first_move; 
+    bool game_ended;
+    bool game_paused;
+
+    State () : 
+            diff(Difficulty::easy), //AGGIUNTA: per coerenza con il resto del codice, la difficoltà di default è EASY 
+            sp(),
+            game_panel({9,9}, 15, starting_gap), //MODIFICATO: il gap di dafault è quello della modalità EASY salvato in una costante precedentemente
+            stop_p(),
+            cp(game_panel.border),
+            focus(false), 
+            first_move(true),
+            mouse_cell(-1), 
+            game_ended(false),
+            game_paused(false) {}
+
+    void reveal(Grid& g, int starting_index_cell);
+    void flood_reveal(Grid& g, int starting_index_cell, Cell& start_c);
+    void ending_reveal(Grid& g, int starting_index_cell); 
+    void reset();
+    void pause();
+    void restart();
+    void set_difficulty(Difficulty diff); //AGGIUNTA: funzione per l'impostazione del schermata di gioco in base alla difficoltà scelta 
+    void draw (sf::RenderWindow& window);
+};
+
+////////////////CREAZIONE////////////////
+
+Grid::Grid (sf::Vector2i bs, int bn, float& cell_size, float gap){
+    cell_num = bs; 
+    mine_num = bn;
+    num_revealed = 0; 
+    Grid_size = {
+        (cell_size * cell_num.x) + (gap * (cell_num.x - 1)),
+        (cell_size * cell_num.y) + (gap * (cell_num.y - 1))
+    };
+
+    float header_height = starting_cell_size * header_grid_proportion; //MODIFICATO: ora l'altezza viena calcata tramite la proporzione 
+
+    Grid_pos = { 
+        window_width - Grid_size.x - window_horizontal_displacement - cell_size/2,
+        (window_height - cell_size - Grid_size.y - header_height)/2 + cell_size/2 + header_height 
+    };
+
+    sf::Vector2f pos; 
+
+    for (int row = 0; row < cell_num.y; row++) {
+        for (int col = 0; col < cell_num.x; col++) {
+            pos = {
+                Grid_pos.x + col * (cell_size + gap), 
+                Grid_pos.y + row * (cell_size + gap)
+            };
+            cells.push_back(Cell(pos, cell_size, col, row, gap)); 
+        }
+    } 
+}
+
+Timer::Timer(sf::Vector2f header_pos, float cell_size, float pos_y, sf::Vector2f size){
+    real_timer = 0; 
+    acc = 0;
+    isRunning = false;
+    timer_size = {size};
+    timer_pos= {header_pos.x + header_parameter_gap, pos_y};
+
+    sf::Vector2f pos;
+    for(int i = 0; i<3;i++){
+        pos = { timer_pos.x+((timer_size.x/3)*i), timer_pos.y}; 
+        timer_numbers.push_back(Number(pos, {timer_size.x/3, timer_size.y})); 
+    }
+
+}
+
+Flag_Counter::Flag_Counter(sf::Vector2f header_pos, sf::Vector2f header_size, float cell_size, float pos_y, sf::Vector2f size, int mine_num){
+    num_flag = mine_num;
+    flag_size ={size}; 
+    flag_pos =  {header_pos.x + header_size.x - (flag_size.x + header_parameter_gap), pos_y};
+
+    sf::Vector2f pos;
+    for(int i = 0; i<3;i++){
+        pos = { flag_pos.x+((flag_size.x/3)*i), flag_pos.y}; 
+        flag_numbers.push_back(Number(pos, {flag_size.x/3, flag_size.y})); 
+    }
+
+    flag_numbers[2].num_texture = &Clock_textures[num_flag%10];
+    flag_numbers[1].num_texture = &Clock_textures[(num_flag/10)%10];
+    flag_numbers[0].num_texture = &Clock_textures[(num_flag/100)%10];
+}
+
+
+Border::Border(float cell_size, Grid& grid, Header& header, float gap){ 
+
+    thickness = cell_size/2;
+
+    b_pos = {   header.h_pos.x - header_border_thickness - thickness, 
+                header.h_pos.y - header_border_thickness - thickness
+            }; 
+    b_size = {  header.h_size.x + (header_border_thickness*2) + (thickness*2), 
+                header.h_size.y + (header_border_thickness*2) + (thickness*2) + grid.Grid_size.y - gap
+            }; 
+
+    // AGGIUNTA: Rimuove le vecchie celle per sicurezza
+    angle_cells.clear();
+    side_cells.clear();
+
+    angle_cells.push_back(Border_Cell({b_pos}, {thickness, thickness}, &border_textures[2]));
+    angle_cells.push_back(Border_Cell({b_pos.x + b_size.x - thickness, b_pos.y}, {thickness, thickness}, &border_textures[3]));
+    angle_cells.push_back(Border_Cell({b_pos.x, b_pos.y + b_size.y - thickness}, {thickness, thickness}, &border_textures[4]));
+    angle_cells.push_back(Border_Cell({b_pos.x + b_size.x - thickness, b_pos.y + b_size.y - thickness}, {thickness, thickness}, &border_textures[5]));
+
+    sf::Vector2f up_down_cell_size = {b_size.x -(thickness*2), thickness};
+    sf::Vector2f left_right_cell_size = {thickness, b_size.y -(thickness*2)};
+
+    side_cells.push_back(Border_Cell({b_pos.x + thickness, b_pos.y}, up_down_cell_size, &border_textures[0]));
+    side_cells.push_back(Border_Cell({b_pos.x + thickness, b_pos.y + b_size.y - thickness}, up_down_cell_size, &border_textures[0]));
+    side_cells.push_back(Border_Cell({b_pos.x, b_pos.y + thickness}, left_right_cell_size, &border_textures[1]));
+    side_cells.push_back(Border_Cell({b_pos.x + b_size.x - thickness, b_pos.y + thickness}, left_right_cell_size, &border_textures[1]));
+
+}
+
+////////////////DRAW////////////////
+
+void Cell::draw (sf::RenderWindow& window)
+{
+    sf::RectangleShape c ({cell_size,cell_size}); 
+    c.setTexture(cell_texture); 
+    c.setPosition(cell_pos); 
+
+    if(cell_mouse_focus){
+        c.setOutlineThickness(cell_gap); 
+        c.setOutlineColor(focus_color); 
+    }
+
+    window.draw(c);
+
+}
+
+void Grid::draw (sf::RenderWindow& window)
+{
+    for (auto& cell : cells) 
+        cell.draw (window);
+}
+
+void Number::draw(sf::RenderWindow& window)
+{
+    sf::RectangleShape n (num_size); 
+    n.setPosition(num_pos); 
+    n.setTexture(num_texture); 
+    window.draw(n);
+}
+
+void Timer::draw(sf::RenderWindow& window)
+{
+    for (auto& number : timer_numbers)
+        number.draw (window);
+}
+
+void Flag_Counter::draw(sf::RenderWindow& window)
+{
+    for(auto& number : flag_numbers)
+        number.draw(window);
+}
+
+void Face::draw(sf::RenderWindow& window)
+{
+    sf::RectangleShape f (face_size); 
+    f.setPosition(face_pos); 
+    f.setTexture(face_texture);
+    window.draw(f);
+}
+
+void Header::draw(sf::RenderWindow& window)
+{
+    sf::RectangleShape h(h_size);
+    h.setPosition(h_pos); 
+    h.setFillColor(header_background_color); 
+    h.setOutlineThickness(header_border_thickness);
+    h.setOutlineColor(header_border_color);
+    window.draw(h);
+    timer.draw(window);
+    f_counter.draw(window);
+    face.draw(window); 
+}
+
+void Border_Cell::draw(sf::RenderWindow& window)
+{
+    sf::RectangleShape b (border_cell_size);
+    b.setPosition(border_cell_pos);
+    b.setTexture(border_cell_texture);
+    window.draw(b);
+}
+
+void Border::draw(sf::RenderWindow& window)
+{
+    for(auto& angle : angle_cells)
+        angle.draw(window);
+    for(auto& side : side_cells)
+        side.draw(window);
+}
+
+void Game_Panel::draw(sf::RenderWindow& window)
+{
+    border.draw(window);
+    header.draw(window);
+    grid.draw(window);
+}
+
+void Stop_Panel::draw(sf::RenderWindow& window){
+    if(!visible) return; 
+
+    sf::RectangleShape s(stop_size); 
+    s.setPosition(stop_pos);
+    s.setFillColor(panel_background_color); 
+    s.setOutlineThickness(panel_thickness); 
+    s.setOutlineColor(panel_border_color); 
+    window.draw(s); 
+    float stop_text_pos_x = stop_pos.x + stop_size.x/2;
+
+    switch(stop_type)
+    {
+        case stop_type::Pause:
+            title.setString("Pausa!"); 
+            break; 
+        
+        case stop_type::Win: 
+            title.setString("Hai vinto!"); 
+            break; 
+
+        case stop_type::Lose: 
+            title.setString("Hai perso!"); 
+            break; 
+
+        case stop_type::New_Game: //AGGIUNTA: aggiunta una nuova tipologia dello Stop Panel per la scelta della modalità di gioco senza dover tornare alla schermata iniziale 
+            title.setString("Scegliere"); 
+            break;
+
+        default: 
+            return; 
+    } 
+    title.setCharacterSize((stop_type == stop_type::New_Game)? stop_title2_size : stop_title_size); //MODIFICA: lo Stop Panel di tipo New Game deve avere un testo leggermente più piccolo essendo che non è un titolo
+    title.setFillColor(text_color);
+    title.setOutlineThickness(text_thickness);
+    title.setOutlineColor(text_border_color);
+    auto b = title.getLocalBounds();
+    title.setOrigin({b.position.x + b.size.x/2, b.position.y}); 
+    if(stop_type == stop_type::New_Game) //MODIFICATO: la posizione del testo per lo Stop Panel di tipo New Game viene posizionato più centralmente
+        title.setPosition({stop_text_pos_x, stop_pos.y + stop_size.y/2 - stop_gap*2 - title.getCharacterSize()*2});
+    else 
+        title.setPosition({stop_text_pos_x, stop_pos.y + stop_gap}); 
+    window.draw(title);
+
+    //MODIFICATO: è stato implementato uno switch al posto di un if poichè sono aumentate le possibilità di tipi che hanno caratteristiche di etsto differenti
+    switch(stop_type){
+        case stop_type::New_Game: 
+            title.setString("la nuova difficolta'"); 
+            break; 
+
+        case stop_type::Pause: 
+            title.setString("Tempo impiegato fino ad ora: "+ to_string(time/3600) + (time/3600 == 1? " ora " : " ore ") + to_string((time%3600)/60) + ((time%3600)/60 == 1? " minuto " : " minuti ") + to_string((time%3600)%60) + ((time%3600)%60 == 1? " secondo " : " secondi "));
+            
+        default: 
+            title.setString("Tempo impiegato: "+ to_string(time/3600) + (time/3600 == 1? " ora " : " ore ") + to_string((time%3600)/60) + ((time%3600)/60 == 1? " minuto " : " minuti ") + to_string((time%3600)%60) + ((time%3600)%60 == 1? " secondo " : " secondi "));
+    }
+    title.setCharacterSize((stop_type == stop_type::New_Game)? stop_title2_size : stop_time_text_size); //MODIFICATO: lo Stop Panel di tipo New Game deve avere un testo leggermente più piccolo essendo che non è un titolo
+    title.setFillColor(stop_time_text_color);
+    b = title.getLocalBounds();
+    title.setOrigin({b.position.x + b.size.x/2, b.position.y});
+    if(stop_type == stop_type::New_Game){ 
+        title.setPosition({stop_text_pos_x,  title.getPosition().y + stop_title2_size + stop_gap}); //MODIFICATO: la posizione del testo per lo Stop Panel di tipo New Game viene posizionato più centralmente
+        title.setFillColor(text_color);  //MODIFICATO: il colore deve rimanere nero poichè non è il testo per il timer 
+    }
+    else 
+        title.setPosition({stop_text_pos_x,  title.getPosition().y + stop_title_size + stop_gap}); 
+
+    window.draw(title);
+
+    //AGGIUNTA: se si sta rappresentando lo Stop Panel di tipo New Game è necessario stampare solo i tre pulsanti
+    if(stop_type ==stop_type::New_Game){
+        easy_cb.draw(window);
+        medium_cb.draw(window); 
+        hard_cb.draw(window);
+        return; 
+    }
+    if(stop_type == stop_type::Pause){ 
+        title.setString("Premere SPACE per riprendere la partita"); 
+        title.setCharacterSize(stop_subtitle2_size); 
+        title.setFillColor(text_color);  
+        b = title.getLocalBounds();
+        title.setOrigin({b.position.x + b.size.x/2, b.position.y});
+        title.setPosition({stop_text_pos_x,title.getPosition().y + stop_time_text_size + stop_gap}); 
+        window.draw(title);
+
+        title.setString("oppure"); 
+        b = title.getLocalBounds();
+        title.setOrigin({b.position.x + b.size.x/2, b.position.y});
+        title.setPosition({stop_text_pos_x,title.getPosition().y + stop_subtitle2_size + stop_gap});
+        window.draw(title);
+
+        title.setString("scegliere uno dei pulsanti qua sottostanti"); 
+        b = title.getLocalBounds();
+        title.setOrigin({b.position.x + b.size.x/2, b.position.y});
+        title.setPosition({stop_text_pos_x,title.getPosition().y + stop_subtitle2_size + stop_gap});
+        window.draw(title);
+    }
+    else{
+        title.setString("Scegliere uno dei pulsanti"); 
+        title.setCharacterSize(stop_subtitle_size);
+        title.setFillColor(text_color);  
+        b = title.getLocalBounds();
+        title.setOrigin({b.position.x + b.size.x/2, b.position.y});
+        title.setPosition({stop_text_pos_x,title.getPosition().y + stop_time_text_size + stop_gap}); 
+        window.draw(title);
+
+        title.setString("qua sottostanti"); 
+        b = title.getLocalBounds();
+        title.setOrigin({b.position.x + b.size.x/2, b.position.y});
+        title.setPosition({stop_text_pos_x,title.getPosition().y + stop_subtitle_size + stop_gap}); 
+        window.draw(title);
+    }
+
+    new_game_cb.draw(window);
+}
+
+void Control_Button::draw (sf::RenderWindow& window){
+    sf::RectangleShape cb (cb_size);
+    cb.setPosition(cb_pos);
+    cb.setFillColor(button_color);
+    cb.setOutlineThickness(button_border_thickness);
+
+    if(mouse_focus)
+        cb.setOutlineColor(focus_color);
+    else 
+        cb.setOutlineColor(button_border_color);
+
+    window.draw(cb);
+
+    cb_text.setFont(font);
+    cb_text.setCharacterSize(cb.getSize().y/button_text_proportion);
+    cb_text.setFillColor(text_color);
+    cb_text.setOutlineThickness(button_text_thickness);
+    cb_text.setOutlineColor(text_border_color);
+    switch(cb_type){
+        case button_type::pause : 
+            cb_text.setString("PAUSA"); 
+            break; 
+        
+        case button_type::new_game : 
+            cb_text.setString(" NUOVA\nPARTITA"); 
+            break;
+        
+        case button_type::easy: //AGGIUNTA: nuovo tipo di testo per rappresentare il pulsante che porterà alla modalità EASY del gioco
+            cb_text.setString("FACILE");
+            break;
+
+        case button_type::medium: //AGGIUNTA: nuovo tipo di testo per rappresentare il pulsante che porterà alla modalità MEDIUM del gioco
+            cb_text.setString("MEDIO");
+            break;
+
+        case button_type::hard: //AGGIUNTA: nuovo tipo di testo per rappresentare il pulsante che porterà alla modalità HARD del gioco
+            cb_text.setString("DIFFICILE");
+            break;
+
+        default: 
+            break; 
+    }
+    sf::FloatRect b = cb_text.getLocalBounds();
+    cb_text.setOrigin(sf::Vector2f(b.position.x + b.size.x/2, b.position.y + b.size.y/2));
+    cb_text.setPosition(sf::Vector2f(cb_pos.x + cb_size.x/2, cb_pos.y + cb_size.y/2));
+
+    window.draw(cb_text);
+}
+
+void Control_Panel::draw (sf::RenderWindow& window){
+    sf::RectangleShape cp(cp_size);
+    cp.setPosition(cp_pos);
+
+    cp.setFillColor(panel_background_color); 
+    cp.setOutlineThickness(panel_thickness); 
+    cp.setOutlineColor(panel_border_color); 
+    window.draw(cp);
+    new_game.draw(window); 
+    pause.draw(window); 
+}
+
+void Start_Panel::draw(sf::RenderWindow& window){
+    sf::RectangleShape s (start_size);
+    s.setPosition (start_pos);
+    s.setFillColor(panel_background_color);
+    s.setOutlineThickness(panel_thickness);
+    s.setOutlineColor(panel_border_color);
+    window.draw (s); 
+    float start_text_pos_x = start_pos.x + start_size.x/2;
+
+    start_title.setString("Benvenuto su");
+    start_title.setCharacterSize(start_size_subtitle);
+    start_title.setFillColor(text_color);
+    start_title.setOutlineThickness(text_thickness);
+    start_title.setOutlineColor(text_border_color);
+    auto b = start_title.getLocalBounds();
+    start_title.setOrigin({b.position.x + b.size.x/2, b.position.y}); 
+    start_title.setPosition({start_text_pos_x, start_pos.y + start_gap});
+    window.draw(start_title);
+
+    start_title.setString("MINESWEEPER"); 
+    start_title.setCharacterSize(font_size_mine_title); 
+    b = start_title.getLocalBounds(); 
+    start_title.setOrigin({b.position.x + b.size.x/2, b.position.y}); 
+    start_title.setPosition({start_text_pos_x,start_title.getPosition().y + start_size_subtitle + start_gap});
+    window.draw(start_title);
+
+    start_title.setString("Versione E.0"); 
+    start_title.setCharacterSize(start_size_text);
+    start_title.setFillColor(focus_color);
+    b = start_title.getLocalBounds(); 
+    start_title.setOrigin({b.position.x + b.size.x/2, b.position.y}); 
+    start_title.setPosition({start_text_pos_x,start_title.getPosition().y + font_size_mine_title + start_gap}); 
+    window.draw(start_title);
+
+    //MODIFICATO: sostituito il testo che andava ad indicare di premere ENTER per iniziare una nuova partita per la possibilità di scelta, tramite tre pulsanti, della modalità di gioco
+    start_title.setString("Scegliere la difficolta' di gioco"); 
+    start_title.setFillColor(text_color);
+    start_title.setCharacterSize(start_size_subtitle);
+    b = start_title.getLocalBounds(); 
+    start_title.setOrigin({b.position.x + b.size.x/2, b.position.y}); 
+    start_title.setPosition({start_text_pos_x,start_title.getPosition().y + start_size_text + start_gap}); 
+    window.draw(start_title);
+
+    //AGGIUNTA: rappresentazione dei tre pulsanti per le tre possibili modalità
+    easy_cb.draw(window);
+    medium_cb.draw(window); 
+    hard_cb.draw(window); 
+    
+}
+
+void State::draw (sf::RenderWindow& window){
+    if(sp.visible) 
+        sp.draw(window); 
+    else{
+        game_panel.draw (window);
+        cp.draw(window); 
+        stop_p.draw(window);
+    }
+}
+
+////////////////ALTRE FUNZIONI////////////////
+
+void Grid::place_mines(int starting_cell_index){
+
+    int x = cells[starting_cell_index].row_index; 
+    int y = cells[starting_cell_index].column_index;
+    int casual_index;
+
+    int i=0; 
+    while(i<mine_num){ 
+        casual_index = (rand()% cells.size()+1)-1; 
+
+       if(abs(cells[casual_index].row_index -x)<=1 && abs(cells[casual_index].column_index - y)<=1) 
+            continue;
+        
+        else if(cells[casual_index].cell_type == cell_type::Mine) 
+            continue;
+
+        else{
+            cells[casual_index].cell_type = cell_type::Mine; 
+            i++; 
+        }
+    }
+
+    for (Cell& c : cells) c.mine_adj = 0;
+
+    int num_cols;
+
+    for(int j=0; j<cells.size(); j ++){
+
+        if(cells[j].cell_type == cell_type::Mine){ 
+            x = cells[j].row_index; 
+            y = cells[j].column_index; 
+            num_cols = cell_num.x; 
+
+            if(x > 0){
+                cells[j-num_cols].mine_adj++; 
+                if(y > 0) cells[j-num_cols-1].mine_adj++; 
+                if(y < (num_cols-1)) cells[j-num_cols+1].mine_adj++;
+            }
+
+            if(x < (cell_num.y-1)){
+                cells[j+num_cols].mine_adj++; 
+                if(y > 0) cells[j+num_cols-1].mine_adj++; 
+                if(y < (num_cols-1)) cells[j+num_cols+1].mine_adj++; 
+            }
+
+            if(y > 0) cells[j-1].mine_adj++; 
+            if(y < (num_cols-1)) cells[j+1].mine_adj++; 
+        }
+    }
+}
+
+void Grid::place_numbers(){
+    for(int i=0; i<cells.size();i++){
+        if(cells[i].cell_type == cell_type::Mine) continue;
+        if(cells[i].mine_adj == 0) cells[i].cell_type = cell_type::Empty; 
+        else cells[i].cell_type = cell_type::Number; 
+    }
+}
+
+void Flag_Counter::set_number(bool flag_placed){ 
+    if(flag_placed) num_flag --; 
+    else num_flag ++;
+    if(num_flag < 0) return;
+    
+    flag_numbers[2].num_texture = &Clock_textures[num_flag%10];
+    flag_numbers[1].num_texture = &Clock_textures[(num_flag/10)%10];
+    flag_numbers[0].num_texture = &Clock_textures[(num_flag/100)%10];
+}
+
+void Timer::update(float elapsed){
+    if(!isRunning) return;
+    acc += elapsed;
+    while(acc >= 1){
+        acc -= 1;
+        real_timer ++;
+        if(real_timer >= 999) return;
+
+        timer_numbers[2].num_texture = &Clock_textures[real_timer%10];
+        timer_numbers[1].num_texture = &Clock_textures[(real_timer/10)%10]; 
+        timer_numbers[0].num_texture = &Clock_textures[(real_timer/100)%10];
+    }
+}
+
+void State::flood_reveal(Grid& g, int starting_index_cell, Cell& start_c){
+
+    int cols = g.cell_num.x;
+    int rows = g.cell_num.y;
+    int up_index = starting_index_cell - cols; 
+    int down_index = starting_index_cell + cols; 
+    int start_col = start_c.column_index; 
+    int start_row = start_c.row_index; 
+
+    if(start_row > 0){
+        if(g.cells[up_index].cell_type != cell_type::Mine) reveal(g,up_index); 
+        if((start_col > 0) && (g.cells[up_index-1].cell_type != cell_type::Mine)) reveal(g, up_index-1); 
+        if((start_col < (cols-1)) && (g.cells[up_index+1].cell_type != cell_type::Mine)) reveal(g, up_index+1);
+    }
+
+    if(start_row < (rows-1)){
+        if(g.cells[down_index].cell_type !=  cell_type::Mine) reveal(g, down_index);
+        if((start_col > 0) && (g.cells[down_index-1].cell_type != cell_type::Mine)) reveal(g, down_index-1);
+        if((start_col < (cols-1)) && (g.cells[down_index+1].cell_type != cell_type::Mine)) reveal(g, down_index+1);        
+    }
+
+    if((start_col > 0) && (g.cells[starting_index_cell-1].cell_type != cell_type::Mine)) reveal(g, starting_index_cell-1);
+
+    if((start_col < (cols-1)) && (g.cells[starting_index_cell+1].cell_type != cell_type::Mine)) reveal(g, starting_index_cell+1);
+}
+
+void State::reveal(Grid& g, int starting_index_cell){
+
+    Cell& c = g.cells[starting_index_cell]; 
+
+    if(c.cell_state == cell_state::Revealed) return;
+    if(c.cell_state == cell_state::Flag) game_panel.header.f_counter.set_number(false);
+    c.cell_state = cell_state::Revealed;
+    game_panel.grid.num_revealed++;
+
+    if(c.cell_type == cell_type::Mine){
+        c.cell_texture = &Exploded_Mine_texture;
+        stop_p.stop_type = stop_type::Lose;
+        ending_reveal(g,starting_index_cell); 
+        game_panel.header.face.face_texture = &lost_face_texture;
+        return; 
+    } 
+    else if(c.cell_type == cell_type::Number){
+        c.cell_texture = &Number_textures[c.mine_adj-1];
+    }
+    else{
+        c.cell_texture = &Empty_texture; 
+        flood_reveal(g, starting_index_cell, c);
+    }
+
+    if (game_panel.grid.num_revealed == static_cast<int>(g.cells.size()) - g.mine_num) {
+        stop_p.stop_type = stop_type::Win;
+        ending_reveal(g, starting_index_cell);
+        game_panel.header.face.face_texture = &win_face_texture;
+    }
+}
+
+void State::ending_reveal(Grid& g, int starting_index_cell){
+    for(int i = 0; i < g.cells.size(); i++){
+
+        if(stop_p.stop_type == stop_type::Lose && i == starting_index_cell) continue;
+
+        if(g.cells[i].cell_state == cell_state::Flag && g.cells[i].cell_type != cell_type::Mine){
+            g.cells[i].cell_state = cell_state::Revealed; 
+            g.cells[i].cell_texture = &False_Mine_texture; 
+        }
+
+        if(g.cells[i].cell_type == cell_type::Mine){
+            g.cells[i].cell_state = cell_state::Revealed; 
+            g.cells[i].cell_texture = &Normal_Mine_texture; 
+        }
+    }
+
+    game_ended = true;
+    game_paused = false;
+    stop_p.visible = true; 
+    game_panel.header.timer.isRunning = false;
+    stop_p.time = game_panel.header.timer.real_timer;
+}
+
+void State::reset(){
+    game_panel = Game_Panel(game_panel.grid.cell_num, game_panel.grid.mine_num, game_panel.gap); 
+    stop_p = Stop_Panel(); 
+    game_paused = focus = game_ended= false;
+    first_move = true;
+    mouse_cell = -1; 
+}
+
+
+void State::pause(){
+    if(!first_move)
+        game_panel.header.timer.isRunning = false;
+
+    stop_p.time = game_panel.header.timer.real_timer;
+    game_paused = true;
+    if(stop_p.stop_type != stop_type::New_Game) stop_p.stop_type = stop_type::Pause; //AGGIUNTA: il gioco viene considerato in pausa anche durante la scelta delle modalità quindi si deve cambaire tipo dello Stop Panel solo se il suo tipo corrente non è New Game 
+    stop_p.visible = true;
+}
+
+void State::restart(){
+    stop_p.visible = false;
+    stop_p.stop_type = stop_type::None;
+    game_paused = false;
+    if(!first_move)
+        game_panel.header.timer.isRunning = true;
+}
+
+//AGGIUNTA: funzione per l'impostazione del schermata di gioco in base alla difficoltà scelta 
+void State::set_difficulty(Difficulty new_diff){
+    switch(new_diff){
+        case Difficulty::easy: //se la difficoltà scelta è EASY imposta le caratteristiche per la cella della modalità EASY (numero celle, numero mine e valore di gap) e imposta correttamete il valore della variabile diff in State
+            diff = Difficulty::easy; 
+            game_panel.grid.cell_num = {9,9};
+            game_panel.grid.mine_num = 15;
+            game_panel.gap = starting_gap; 
+            break; 
+
+        case Difficulty::medium: //se la difficoltà scelta è MEDIUM imposta le caratteristiche per la cella della modalità MEDIUM (numero celle, numero mine e valore di gap) e imposta correttamete il valore della variabile diff in State
+            diff = Difficulty::medium;
+            game_panel.grid.cell_num = {16,16};
+            game_panel.grid.mine_num = 40; 
+            game_panel.gap = 1.2;
+            break;
+
+        case Difficulty::hard: //se la difficoltà scelta è HARD imposta le caratteristiche per la cella della modalità HARD (numero celle, numero mine e valore di gap) e imposta correttamete il valore della variabile diff in State
+            diff = Difficulty::hard; 
+            game_panel.grid.cell_num = {30,16};
+            game_panel.grid.mine_num = 99;
+            game_panel.gap = 0.8;
+            break; 
+
+        default: 
+            break;
+    }
+
+    reset(); //reset della schermata di gioco con le nuove caratteristiche per la griglia impostate precedentemente
+}
+
+////////////////EVENTI////////////////
+
+void handle_close (sf::RenderWindow& window)
+{
+    window.close();
+}
+
+void handle_resize (const sf::Event::Resized& resized, sf::RenderWindow& window)
+{
+    float aspect = static_cast<float>(window_width)/static_cast<float>(window_height);
+    sf::Vector2u ws = resized.size;
+    float new_aspect = static_cast<float>(ws.x)/static_cast<float>(ws.y);  
+
+    if (new_aspect < aspect)
+        ws = {ws.x,static_cast<unsigned>(ws.x/aspect)}; 
+        else
+        ws = {static_cast<unsigned>(ws.y*aspect),ws.y}; 
+
+    window.setSize(ws);
+}
+
+template <typename T>
+void handle (T& event, State& state) {}
+
+void handle (const sf::Event::FocusGained&, State& state)
+{
+    state.focus = true;
+}
+
+void handle (const sf::Event::FocusLost&, State& state)
+{
+    if(state.sp.visible) return;
+    if(!state.game_ended){
+        state.pause();
+        if(!state.first_move){
+            state.game_panel.header.timer.isRunning = false;
+            state.game_panel.header.face.face_texture = &smile_face_texture; 
+        }
+    }
+    state.focus = false;
+}
+
+void handle_mouse_pressed (const sf::Event::MouseButtonPressed& mouse, sf::RenderWindow& window, State& state)
+{
+    sf::Vector2f mouse_pos = window.mapPixelToCoords(sf::Vector2i(mouse.position.x, mouse.position.y));
+
+    //MODIFICATO: modificato il codice per prendere in considerazione anche il cliccare i pulsanti per le modalità di gioco o di New Game
+    if(state.game_ended || state.game_paused ||state.sp.visible) 
+    {
+        if (mouse.button != sf::Mouse::Button::Left) return;
+
+        if(state.sp.visible){ //se la schermata iniziale è visibile ed è stato cliccato uno dei pulsanti di scelta della modalità gioco chiamata la funzione per il settaggio della difficoltà e rendi visibile la schermata di gioco
+            if (state.sp.easy_cb.cb_bounds.contains(mouse_pos)){
+                state.set_difficulty(Difficulty::easy); 
+                state.sp.visible = false; 
+            }
+            else if(state.sp.medium_cb.cb_bounds.contains(mouse_pos)){ 
+                state.set_difficulty(Difficulty::medium);
+                state.sp.visible = false; 
+            }
+            else if(state.sp.hard_cb.cb_bounds.contains(mouse_pos)){ 
+                state.set_difficulty(Difficulty::hard);
+                state.sp.visible = false; 
+            }
+            return;
+        }
+        else if (state.stop_p.stop_type == stop_type::New_Game){ //se invece è visibile lo Stop Panel con tipo New Game ed è stato cliccato uno dei pulsanti di scelta della modalità gioco chiamata la funzione per il settaggio della difficoltà
+            if (state.stop_p.easy_cb.cb_bounds.contains(mouse_pos)) 
+                state.set_difficulty(Difficulty::easy); 
+
+            else if (state.stop_p.medium_cb.cb_bounds.contains(mouse_pos))
+                state.set_difficulty(Difficulty::medium);
+
+            else if (state.stop_p.hard_cb.cb_bounds.contains(mouse_pos))
+                state.set_difficulty(Difficulty::hard);
+        }
+
+        //negli altri casi il tipo dello Stop Panel è Pause e se è stato cliccato il pulsante di New Game trasforma il tipo dello Stop Panel in New Game
+        else if(state.stop_p.new_game_cb.cb_bounds.contains(mouse_pos)) 
+            state.stop_p.stop_type = stop_type::New_Game; 
+        
+        return;
+    }
+
+    if( mouse.button == sf::Mouse::Button::Left){
+        
+        if(state.cp.new_game.cb_bounds.contains(mouse_pos)){
+            state.stop_p.stop_type = stop_type::New_Game; 
+            state.pause();
+            return; 
+        }
+
+        else if(state.cp.pause.cb_bounds.contains(mouse_pos)){
+            state.pause(); 
+            return; 
+        }
+
+    }
+
+    if(state.mouse_cell <0 || state.mouse_cell >= state.game_panel.grid.cells.size()) return; 
+
+    Cell& cur_cell = state.game_panel.grid.cells[state.mouse_cell]; 
+
+    if(cur_cell.cell_state == cell_state::Revealed) return; 
+
+    if( mouse.button == sf::Mouse::Button::Left){
+
+        if(state.first_move){
+            state.first_move = false;
+            state.game_panel.grid.place_mines(state.mouse_cell);
+            state.game_panel.grid.place_numbers();
+            state.reveal(state.game_panel.grid, state.mouse_cell);
+            state.game_panel.header.timer.isRunning = true;
+        }
+        else{
+            state.game_panel.header.face.face_texture = &Click_face_texture;
+            state.reveal(state.game_panel.grid, state.mouse_cell);
+        }
+    }
+
+    if(mouse.button == sf::Mouse::Button::Right){
+        if(state.first_move) return;
+
+        if(cur_cell.cell_state != cell_state::Flag){
+            state.game_panel.header.f_counter.set_number(true);
+            cur_cell.cell_state = cell_state::Flag; 
+            cur_cell.cell_texture = &Flag_texture;
+        }
+        else{
+            state.game_panel.header.f_counter.set_number(false);
+            cur_cell.cell_state = cell_state::Covered; 
+            cur_cell.cell_texture = &Covered_texture;
+        }
+    }
+}
+
+void handle (const sf::Event::MouseButtonReleased& mouse, State& state)
+{
+    if(state.game_ended || state.game_paused || state.game_panel.header.face.face_texture != &Click_face_texture) return;
+    state.game_panel.header.face.face_texture = &smile_face_texture; 
+}
+
+void handle_mouse_moved (const sf::Event::MouseMoved& mouse, sf::RenderWindow& window, State& state){
+    const sf::Vector2f mouse_float_pos = window.mapPixelToCoords(sf::Vector2i(mouse.position.x, mouse.position.y));
+
+    //AGGIUNTA: se è visibile la schermata iniziale e il muose si trova sopra ad uno dei pulsanti della schermata dai il focus al pulsante considerato
+    if(state.sp.visible){
+        state.sp.easy_cb.mouse_focus = state.sp.easy_cb.cb_bounds.contains(mouse_float_pos); 
+        state.sp.medium_cb.mouse_focus = state.sp.medium_cb.cb_bounds.contains(mouse_float_pos); 
+        state.sp.hard_cb.mouse_focus = state.sp.hard_cb.cb_bounds.contains(mouse_float_pos);
+        return;
+    }
+
+    if(state.game_ended || state.game_paused){
+        state.stop_p.new_game_cb.mouse_focus = state.stop_p.new_game_cb.cb_bounds.contains(mouse_float_pos); 
+        //AGGIUNTA: gestito il focus per i nuovi tre possibili pulsanti dello Stop Panel
+        state.stop_p.easy_cb.mouse_focus = state.stop_p.easy_cb.cb_bounds.contains(mouse_float_pos); 
+        state.stop_p.medium_cb.mouse_focus = state.stop_p.medium_cb.cb_bounds.contains(mouse_float_pos); 
+        state.stop_p.hard_cb.mouse_focus = state.stop_p.hard_cb.cb_bounds.contains(mouse_float_pos); 
+        return; 
+    }
+
+    state.cp.new_game.mouse_focus = state.cp.new_game.cb_bounds.contains(mouse_float_pos);  
+
+    state.cp.pause.mouse_focus = state.cp.pause.cb_bounds.contains(mouse_float_pos); 
+
+    int new_idx =-1;
+    for (int i = 0; i < state.game_panel.grid.cells.size(); ++i) {
+        if (state.game_panel.grid.cells[i].cell_bounds.contains(mouse_float_pos)) {
+            new_idx = i; 
+            break;
+        }
+    }
+
+    if (new_idx == state.mouse_cell) return;
+
+    if(state.mouse_cell >= 0)
+        state.game_panel.grid.cells[state.mouse_cell].cell_mouse_focus = false;
+
+    state.mouse_cell = new_idx;
+    if (state.mouse_cell >= 0)
+        state.game_panel.grid.cells[state.mouse_cell].cell_mouse_focus = true;
+}
+
+void handle(const sf::Event::KeyPressed& key, State& state) {
+
+    if (state.game_paused && key.scancode == sf::Keyboard::Scancode::Space) state.restart(); 
+}
+
+////////////////LOOP////////////////
+
+int main()
+{
+    srand(time(NULL));
+    load_textures_fonts(); 
+
+    sf::RenderWindow window (sf::VideoMode ({window_width, window_height}), window_title); 
+    window.setFramerateLimit (max_frame_rate);
+    window.setMinimumSize(window.getSize());
+
+    sf::RectangleShape border({(window_width - window_border_thickness*2),(window_height- window_border_thickness*2)}); 
+    border.setPosition({window_border_thickness, window_border_thickness}); 
+    border.setFillColor(sf::Color::Transparent); 
+    border.setOutlineThickness(window_border_thickness); 
+    border.setOutlineColor(window_border_color);  
+
+    State state;
+    sf::Clock Clock;
+    float elapsed; 
+
+    while (window.isOpen())
+    {
+        window.handleEvents (
+                             [&window](const sf::Event::Closed&) { handle_close (window); },
+                            [&window](const sf::Event::Resized& event) { handle_resize (event, window); }, 
+                            [&window, &state](const sf::Event::MouseButtonPressed& event) { handle_mouse_pressed (event, window, state); },
+                            [&window, &state](const sf::Event::MouseMoved& event) {handle_mouse_moved (event, window, state); },
+                            [&state] (const auto& event) { handle (event, state); }
+        );
+
+        elapsed = Clock.restart().asSeconds();
+        state.game_panel.header.timer.update(elapsed);
+
+        window.clear(window_background_color);
+        state.draw(window); 
+        window.draw(border); 
+        window.display();
+    }
+}
