@@ -1092,7 +1092,7 @@ void State::set_difficulty(Difficulty new_diff){
 
         case Difficulty::hard:
             diff = Difficulty::hard;
-            game_panel.grid.cell_num = {30,16};
+            game_panel.grid.cell_num = {30,20};
             game_panel.grid.mine_num = 99;
             game_panel.gap = 0.8;
             break; 

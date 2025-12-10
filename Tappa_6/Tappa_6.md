@@ -10,7 +10,7 @@ Le modalità saranno:
     * dimensione griglia: 16x16 celle
     * numero mine: 40
 - DIFFICILE: 
-    * dimensione griglia: 30X16 celle
+    * dimensione griglia: 30x20 celle
     * numero mine: 99 
 Rendere possibile, inoltre, la scelta della difficoltà di gioco già dalla schermata iniziale.
 
@@ -40,7 +40,7 @@ Allego uno screenshot del risultato da me ottenuto:
 Cliccando sui rispettivi pulsanti, la griglia deve adattarsi alle dimensioni specificate per la difficoltà scelta: 
 - FACILE: griglia 9x9 e 15 mine. 
 - MEDIO: griglia 16x16 e 40 mine. 
-- DIFFICILE: griglia 30x16 e 99 mine. <br><br>
+- DIFFICILE: griglia 30x20 e 99 mine. <br><br>
 Allego degli screenshot dei risultati da me ottenuti:  
 ![risultato_sei_facile](../risorse/risultati/tappa6_facile.png)
 ![risultato_sei_medio](../risorse/risultati/tappa6_medio.png)
