@@ -1,22 +1,21 @@
 #include <SFML/Graphics.hpp>
-#include <vector> 
+#include <vector>
 #include <string>
-#include <cstdlib> 
-#include <ctime> 
+#include <cstdlib>
+#include <ctime>
 #include <cmath>
 #include <SFML/System/Clock.hpp>
 #include "../risorse/textures_fonts.hpp"
 
-using namespace std; 
+using namespace std;
 
 ////////////////FINESTRA////////////////
-
-const char* window_title = "Interactive Exit";
+const char* window_title = "Rules and Title";
 const unsigned window_width = 800; 
 const unsigned window_height = 600;  
 const float max_frame_rate = 60; 
 const float window_horizontal_displacement = 50; 
-const float window_vertical_displacement = 50; 
+const float window_vertical_displacement = 30; //MODIFICATO: reso un valore minore in modo da poterlo usare come diplacement per il titolo di gioco
 sf::Color window_background_color = sf::Color(144, 238, 144); 
 
 ////////////////BORDO FINESTRA////////////////
@@ -87,6 +86,8 @@ const float button_text_proportion =3.5;
 const float control_button_horizontal_displacement = 20;
 const float control_button_vertical_displacement = 20;
 const float control_vertical_gap = 10;
+const unsigned control_text_size = 10; //AGGIUNTA: dimensione del testo interno al Control Panel
+sf::Color control_text_info_color = sf::Color::Red; //AGGIUNTA: colore del testo INFORMAZIONI GIOCO nel Control Panel
 
 ////////////////START PANEL////////////////
 
@@ -99,7 +100,6 @@ const unsigned start_size_subtitle = 30;
 const unsigned start_size_text = 17;
 const float start_cb_width = start_width/5;
 const float start_cb_height = start_height/6;
-
 
 ////////////////STATE////////////////
 
@@ -299,14 +299,20 @@ struct Control_Panel
     Control_Button pause;
     Control_Button new_game;
     Control_Button exit;
+    sf::Text control_text; //AGGIUNTA: aggiunta di un testo con informazioni e regole di gioco al control Panel che cambia in base alla difficoltà di gioco scelta 
+    int control_info_mine; //AGGIUNTA: numero di mine nella griglia (servirà per il testo del Control Panel)
+    Difficulty control_info_diff; //AGGIUNTA: difficoltà scelta di gioco
 
-    Control_Panel(Border border): 
+    Control_Panel(Border border, int num_mines, Difficulty diff): //MODIFICATO: per completare il testo interno del Control Panel si ha bisogno dei valori di difficoltà di gioco e numero delle bandierine
                                     cp_size({border.b_size.x -(border.thickness *2), border.b_size.y -(border.thickness *2)}),
                                     cp_pos(window_horizontal_displacement + panel_thickness, border.b_pos.y + border.thickness),
                                     button_size({(cp_size.x-(control_button_horizontal_displacement*2))/3, (cp_size.y-(control_button_vertical_displacement*2))/8}),
                                     new_game(button_type::new_game, {cp_pos.x + control_button_horizontal_displacement, cp_pos.y + control_button_vertical_displacement}, button_size),
                                     pause(button_type::pause, {cp_pos.x +cp_size.x - control_button_horizontal_displacement - button_size.x, cp_pos.y + control_button_vertical_displacement}, button_size), 
-                                    exit(button_type::exit, {cp_pos.x +cp_size.x/2 - button_size.x/2, pause.cb_pos.y + pause.cb_size.y + control_button_vertical_displacement + control_vertical_gap/2}, button_size) {}
+                                    exit(button_type::exit, {cp_pos.x +cp_size.x/2 - button_size.x/2, pause.cb_pos.y + pause.cb_size.y + control_button_vertical_displacement + control_vertical_gap/2}, button_size),
+                                    control_text{font},
+                                    control_info_mine(num_mines),
+                                    control_info_diff(diff) {}
 
     void draw (sf::RenderWindow& window);
 };
@@ -365,18 +371,20 @@ struct State
     bool first_move; 
     bool game_ended;
     bool game_paused;
+    sf::Text title; //AGGIUNTA: titolo del gioco (verrà inserito sopra il Game Panel e Control Panel)
 
     State () : 
             diff(Difficulty::easy),
             sp(),
             game_panel({9,9}, 15, starting_gap), 
             stop_p(),
-            cp(game_panel.border),
+            cp(game_panel.border, 15, diff), //MODIFICATO
             focus(false), 
             first_move(true),
             mouse_cell(-1), 
             game_ended(false),
-            game_paused(false) {}
+            game_paused(false), 
+            title{font} {}
 
     void reveal(Grid& g, int starting_index_cell);
     void flood_reveal(Grid& g, int starting_index_cell, Cell& start_c);
@@ -384,7 +392,7 @@ struct State
     void reset();
     void pause();
     void restart();
-    void exit(); //AGGIUNTA: funzione per il ritorno alla schermata iniziale quando viene cliccato il pulsante ESCI
+    void exit();
     void set_difficulty(Difficulty diff);
     void draw (sf::RenderWindow& window);
 };
@@ -746,6 +754,54 @@ void Control_Panel::draw (sf::RenderWindow& window){
     new_game.draw(window);
     pause.draw(window);
     exit.draw(window);
+
+    //AGGIUNTA: rappresentazione del testo delle informazioni e regole di gioco 
+    control_text.setString("INFORMAZIONI SUL GIOCO"); //titolo dell informazioni
+    control_text.setCharacterSize(control_text_size*2); //è leggermente più grande del resto del testo
+    control_text.setFillColor(control_text_info_color); //ha un colore diverso dal resto impostato precedentemente
+    auto b = control_text.getLocalBounds();
+    control_text.setOrigin({b.position.x + b.size.x/2, b.position.y});
+    control_text.setPosition({cp_pos.x + cp_size.x/2, exit.cb_pos.y + exit.cb_size.y + control_vertical_gap*2}); //è posizionato centralmente in orizzontale rispetto al Control_Panel e verticalmente appena sotto dei pulsanti 
+    window.draw(control_text);
+
+    float control_text_pos_x = cp_pos.x + control_vertical_gap; //AGGIUNTA: salvo il valore della posizione x del testo successivo poichè verrà riutilizzato più volte nelle istruzioni successive. I prossimi testi saranno posizioni a sinistra e non più centralmente.
+
+    //AGGIUNTA: testo che indica la difficoltà scelta della partita e il corrispondente numero di mine
+    control_text.setCharacterSize(control_text_size);
+    control_text.setFillColor(text_color); 
+    control_text.setOrigin({0, 0});
+    control_text.setPosition({control_text_pos_x, control_text.getPosition().y + control_text_size*2 + control_vertical_gap});
+    control_text.setLineSpacing(2); //AGGIUNTA: imposta lo spazio tra le righe leggermente magliore di quello di default
+    switch(control_info_diff){
+        case Difficulty::easy: 
+            control_text.setString("Difficolta' scelta :\tFACILE \nTotale mine nella griglia :\t" + to_string(control_info_mine));
+            break; 
+
+        case Difficulty::medium: 
+            control_text.setString("Difficolta' scelta :\tMEDIA \nTotale mine nella griglia :\t" + to_string(control_info_mine));
+            break; 
+
+        case Difficulty::hard: 
+            control_text.setString("Difficolta' scelta :\tDIFFICILE \nTotale mine nella griglia :\t" + to_string(control_info_mine));
+            break; 
+        default: 
+            return; 
+    }
+    window.draw(control_text);
+
+    //AGGIUNTA: testo che va ad indicare l'obbiettivo del gioco 
+    control_text.setString("Obbiettivo del gioco : \n\t- Scoprire tutte le celle che nascondono\n\t  una mina. \n\t- La partita e' persa alla prima mina\n\t  scoperta."); 
+    control_text.setOrigin({0, 0});
+    control_text.setPosition({control_text_pos_x, control_text.getPosition().y + control_text_size*2 + control_vertical_gap*3}); 
+    control_text.setLineSpacing(1); //ritorno al Line Spacing di default
+    window.draw(control_text);
+
+    //AGGIUNTA: testo che va ad indicare le istruzioni di gioco
+    control_text.setString("Istruzioni :\n\t- Click Sinistro : Scopre cella\n\t- Click Destro : Mette/toglie bandiera"); 
+    control_text.setOrigin({0, 0});
+    control_text.setPosition({control_text_pos_x, control_text.getPosition().y + control_text_size*5 + control_vertical_gap*2}); 
+    window.draw(control_text);
+
 }
 
 void Start_Panel::draw(sf::RenderWindow& window){
@@ -802,6 +858,17 @@ void State::draw (sf::RenderWindow& window){
     else{
         game_panel.draw (window);
         cp.draw(window); 
+        //AGGIUNTA: rappresentazione del titolo di gioco all'interno della schermata di gioco 
+        title.setString("MINESWEEPER"); 
+        title.setCharacterSize(font_size_mine_title);
+        title.setFillColor(text_color); 
+        title.setOutlineThickness(text_thickness);
+        title.setOutlineColor(text_border_color); 
+        auto b = title.getLocalBounds(); 
+        title.setOrigin({b.position.x + b.size.x/2, b.position.y}); 
+        title.setPosition({window_width/2, window_vertical_displacement}); //posizionato appena sopra il Game Panel e Control Panel
+        window.draw(title);
+
         stop_p.draw(window);
     }
 }
@@ -868,8 +935,11 @@ void Grid::place_numbers(){
 }
 
 void Flag_Counter::set_number(bool flag_placed){ 
-    if(flag_placed) num_flag --; 
-    else num_flag ++;
+    if(flag_placed) 
+        num_flag --; 
+    else 
+        num_flag ++;
+
     if(num_flag < 0) return;
     
     flag_numbers[2].num_texture = &Clock_textures[num_flag%10];
@@ -974,11 +1044,12 @@ void State::ending_reveal(Grid& g, int starting_index_cell){
 void State::reset(){
     game_panel = Game_Panel(game_panel.grid.cell_num, game_panel.grid.mine_num, game_panel.gap); 
     stop_p = Stop_Panel(); 
+    cp.control_info_diff = diff; //AGGIUNTA: impostazione della nuova difficoltà da scrivere nel testo del Control Panel
+    cp.control_info_mine = game_panel.grid.mine_num; //AGGIUNTA: impostazione del nuovo numero di mine da scrivere nel testo del Control Panel
     game_paused = focus = game_ended= false;
     first_move = true;
     mouse_cell = -1; 
 }
-
 
 void State::pause(){
     if(!first_move)
@@ -998,9 +1069,8 @@ void State::restart(){
         game_panel.header.timer.isRunning = true;
 }
 
-//AGGIUNTA: funzione per il ritorno alla schermata iniziale quando viene cliccato il pulsante ESCI
 void State::exit(){
-    reset(); //viene fatto il reset della schermata di gioco 
+    reset();
     sp.visible = true; 
 }
 
@@ -1113,7 +1183,7 @@ void handle_mouse_pressed (const sf::Event::MouseButtonPressed& mouse, sf::Rende
         else if(state.stop_p.new_game_cb.cb_bounds.contains(mouse_pos)) 
             state.stop_p.stop_type = stop_type::New_Game; 
 
-        else if(state.stop_p.exit_cb.cb_bounds.contains(mouse_pos)) //AGGIUNTA: se è stato cliccato il pulsante ESCI nello Stop Panel chiama la funzione che gestisce l'uscita dalla schermata di gioco 
+        else if(state.stop_p.exit_cb.cb_bounds.contains(mouse_pos))
             state.exit(); 
         
         return;
@@ -1132,7 +1202,7 @@ void handle_mouse_pressed (const sf::Event::MouseButtonPressed& mouse, sf::Rende
             return; 
         }
 
-        else if(state.cp.exit.cb_bounds.contains(mouse_pos)){ //AGGIUNTA: se è stato cliccato il pulsante ESCI neLl Control Panel chiama la funzione che gestisce l'uscita dalla schermata di gioco 
+        else if(state.cp.exit.cb_bounds.contains(mouse_pos)){
             state.exit(); 
             return; 
         }
@@ -1197,13 +1267,13 @@ void handle_mouse_moved (const sf::Event::MouseMoved& mouse, sf::RenderWindow& w
         state.stop_p.easy_cb.mouse_focus = state.stop_p.easy_cb.cb_bounds.contains(mouse_float_pos); 
         state.stop_p.medium_cb.mouse_focus = state.stop_p.medium_cb.cb_bounds.contains(mouse_float_pos); 
         state.stop_p.hard_cb.mouse_focus = state.stop_p.hard_cb.cb_bounds.contains(mouse_float_pos); 
-        state.stop_p.exit_cb.mouse_focus = state.stop_p.exit_cb.cb_bounds.contains(mouse_float_pos); //AGGIUNTA: gestito il focus per il nuovo pulsante di uscita nello Stop Panel
+        state.stop_p.exit_cb.mouse_focus = state.stop_p.exit_cb.cb_bounds.contains(mouse_float_pos);
         return; 
     }
 
     state.cp.new_game.mouse_focus = state.cp.new_game.cb_bounds.contains(mouse_float_pos);  
     state.cp.pause.mouse_focus = state.cp.pause.cb_bounds.contains(mouse_float_pos); 
-    state.cp.exit.mouse_focus = state.cp.exit.cb_bounds.contains(mouse_float_pos); //AGGIUNTA: gestito il focus per il nuovo pulsante di uscita nel Control Panel 
+    state.cp.exit.mouse_focus = state.cp.exit.cb_bounds.contains(mouse_float_pos);
 
     int new_idx =-1;
     for (int i = 0; i < state.game_panel.grid.cells.size(); ++i) {
