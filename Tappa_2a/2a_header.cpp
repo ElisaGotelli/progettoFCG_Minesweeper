@@ -713,7 +713,7 @@ int main()
     while (window.isOpen())
     {
         window.handleEvents (
-                             [&window](const sf::Event::Closed&) { handle_close (window); },
+                            [&window](const sf::Event::Closed&) { handle_close (window); },
                             [&window](const sf::Event::Resized& event) { handle_resize (event, window); }, 
                             [&window, &state](const sf::Event::MouseMoved& event) {handle_mouse_moved (event, window, state); },
                             [&state] (const auto& event) { handle (event, state); }

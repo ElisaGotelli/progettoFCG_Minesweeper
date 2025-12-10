@@ -1,34 +1,30 @@
 # TAPPA 2A - GRAFICA HEADER 
 
 ## OBBIETTIVO DELLA TAPPA: 
-Implementazione della grafica di un'intestazione per il pannello di gioco e dei suoi elementi interni, cioè:
-- un timer per la partita in corso
-- la faccina tipica del gioco stesso Minesweeper 
-- un contatore per le bandierine ancora disponibili rispetto al numero totale di mine
+Implementare la grafica per un'intestazione per il pannello di gioco e dei suoi elementi, ovvero:
+- un timer per la partita in corso;
+- la faccina tipica del gioco stesso Minesweeper;
+- un contatore per le bandierine ancora disponibili rispetto al numero totale di mine; 
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente:
-- sono state definite le struct (con le loro funzioni draw() e i loro costruttori) per rappresentare un singolo numero (Number); il timer di gioco (Timer) e il contatore di bandierine (Flag_Counter), composti entrambi da tre Number; la faccina (Face); la struttura contenente tutti gli elementi elencati precedentemente (header). 
-- è stato aggiunto l'header all'interno della struct Game_Panel
-- sono state definite delle nuove costanti globali contenenti le caratteristiche di colore e del bordo dell'header 
-- è stata modificato il costruttore Grid per fare in modo che per la posizione y della griglia venga preso in considerazione anche l'header
-
-## ISTRUZIONI PER ESEGUIRE DA TERMINALE: 
-Prima di poter scrivere questo comando su terminale, bisogna aver: 
-- creato la cartella build 
-- configurato tramite cmake 
-- compilato con make 
-
-```bash
-cd build 
-./Tappa2a
-```
+- sono state definite le struct (con le loro funzioni draw(), parametri e i loro costruttori) per rappresentare: 
+    * un singolo numero (Number); 
+    * il contatore di bandierine (Flag_Counter) composto da tre Number; 
+    * la faccina (Face);
+    * il timer di gioco (Timer) composto da tre Number; 
+    * la struttura contenente tutti gli elementi elencati precedentemente (Header); 
+- è stato aggiunto l'header all'interno della struct Game_Panel;
+- sono state definite delle nuove costanti globali contenenti le caratteristiche di colore e del bordo dell'header; 
+- è stata modificato in modo che venga preso in considerazione l'header il: 
+    * calcolo della cell_size nel costruttore della struct Game_Panel;
+    * calcolo della Grid_pos.y nel costruttore della struct Grid;
 
 ## VERIFICA DEL RISULTATO: 
-All'apertura della finestra, deve comparire esattamente al di sopra della griglia di gioco un rettangolo grigio con bordo nero (l'header) contenente:
-- a sinistra tre numeri zero (corrispondenti al timer)
-- al centro una faccina sorridente 
-- a destra tre numeri zero (corrispondenti al flag counter)
+All'apertura della finestra, dovrebbe comparire esattamente al di sopra della griglia di gioco un rettangolo grigio con bordo nero (Header) contenente:
+- a sinistra tre numeri zero (corrispondenti al Timer);
+- al centro una faccina sorridente (corrispodnente a Face);
+- a destra tre numeri zero (corrispondenti al Flag Counter);
 <br><br>
 Allego uno screenshot del risultato da me ottenuto:  
 ![risultato_duea](../risorse/risultati/tappa2a.png)

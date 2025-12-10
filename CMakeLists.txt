@@ -18,7 +18,7 @@ target_compile_features(Tappa00 PRIVATE cxx_std_17)
 target_link_libraries(Tappa00 PRIVATE SFML::Graphics)
 
 # TAPPA 1a
-add_executable(Tappa1a Tappa_1a/1a_cell_starting_texture.cpp)
+add_executable(Tappa1a Tappa_1a/1a_cell_starting_graphic.cpp)
 target_compile_features(Tappa1a PRIVATE cxx_std_17)
 target_link_libraries(Tappa1a PRIVATE SFML::Graphics)
 

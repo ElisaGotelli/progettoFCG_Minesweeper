@@ -1,4 +1,4 @@
-# Minesweeper The Game (Versione Personalizzata E.0)
+# MINESWEEPER THE GAME 
 ## OBBIETTIVO DEL PROGETTO: 
 Questo progetto presenta come obbiettivo quello di creare una versione personalizzata del gioco Minesweeper (in italiano: Prato Fiorito/Campo Minato).<br>
 Per le regole e caratteristiche base del gioco si è preso spunto principalmente dai siti: 
@@ -19,12 +19,12 @@ Invece, per lo sviluppo del progetto completo, ci si è focalizzati in particola
 Detto pannello, inoltre, permette, se è stato indicato che si vuole iniziare una nuova partita, di selezionarne direttamente la nuova difficoltà;
 
 ## TAPPE CREATE: 
-Per il progetto sono state create 14, in cui: 
-- ogni numero rappresenta una nuova funzionalità completa (ad esempio le tappe 1a,1b,1c insieme completano la versione base funzionante del gioco);
-- Le tappe con il suffisso 'graphic' nel nome del file implementano solo della nuova grafica rispetto alla tappa precedente;
-- le tappe il cui nome del file contiene la parola graphic implementano nel codice della tappa precedente solo della nuova grafica;
-- le tappe il cui nome del file contiene la parola interactive rendono interattiva la grafica implementata nella tappa precedente;
+Per il progetto sono state sviluppate 14, in cui: 
+- ogni numero di tappa rappresenta l'introduzione di una nuova macro-funzionalità (ad esempio le tappe 1a,1b,1c insieme sono i vari passi per l'implementazione della prima versione giocabile del progetto);
+- Le tappe con il suffisso 'graphic' nel nome del file .cpp implementano solo della nuova grafica rispetto alla tappa precedente;
+- Le tappe con il suffisso 'interactive' nel nome del file .cpp contiene la parola interactive rendono interattiva la grafica implementata nella tappa precedente;
 - ogni tappa, come richiesto, presenta, oltre al file di codice, un file di documentazione che spiega nel dettagli detta tappa. <br>
-In particolare, nella sezione 'Problemi riscontrati e soluzioni' delle varie documentazioni sono stati riportati i problemi riscontrati segnati nei vari file di documentazione sono solo i problemi complessi che hanno richiesto tempo per essere risolti. Per i problemi minori, risolti velocemente tramite piccole modifiche, sono stati utilizzati dei commenti nel codice con la scritta 'MODIFICATO';
+In particolare, nella sezione 'Problemi riscontrati e soluzioni' di dette documentazioni sono stati riportati i problemi riscontrati segnati nei vari file di documentazione sono solo i problemi complessi che hanno richiesto tempo per essere risolti. Per i problemi minori, risolti velocemente tramite piccole modifiche, sono stati utilizzati dei commenti nel codice con la scritta 'MODIFICATO';
 
-
+## RISORSE UTILIZZATE: 
+Come risorse esterne di codice sono stati utilizzati solamente i laboratori e file di codice sviluppati in classe insieme al professore Puppo (in particolare il codice del Laboratorio 3).

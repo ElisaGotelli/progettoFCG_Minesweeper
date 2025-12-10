@@ -6,7 +6,7 @@
 using namespace std; 
 
 ////////////////FINESTRA////////////////
-const char* window_title = "Cell Starting Texture"; 
+const char* window_title = "Cell Starting Graphic"; 
 const unsigned window_width = 800; 
 const unsigned window_height = 600;  
 const float max_frame_rate = 60; 
