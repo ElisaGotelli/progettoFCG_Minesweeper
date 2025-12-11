@@ -20,34 +20,21 @@ Rispetto alla tappa precedente:
 Come da regole di gioco è stato fatto in modo che la prima cella rivelata della partita sia sempre di tipo cell_type Empty e che le celle adiacenti non abbiano cell_type Mine. In questo modo, la prima mossa porterà sempre all'esecuzione di flood_reveal (rivelazione a catena). <br>
 Le mine vengono posizionate casualmente e i vari cell_type vengono assegnati solo dopo il primo click del tasto sinistro del mouse nella griglia, tramite la chiamata alle funzioni place_mines e place_numbers.
 
-## ISTRUZIONI PER ESEGUIRE DA TERMINALE: 
-Prima di poter scrivere questo comando su terminale, bisogna aver: 
-- creato la cartella build 
-- configurato tramite cmake 
-- compilato con make 
-
-```bash
-cd build 
-./Tappa1b
-```
-
 ## VERIFICA DEL RISULTATO:
 #### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella con focus del mouse al momento dello screenshot). Non devono comparire nel risultato
 #### FOCUS: 
-Al passaggio del mouse su una cella, questa dovrebbe avere il bordo illuminato di rosso. <br> <br>
-Allego uno screenshot del risultato da me ottenuto:
+- Al passaggio del mouse su una cella, questa dovrebbe avere il bordo illuminato di rosso. <br> <br> Allego uno screenshot del risultato da me ottenuto:
 ![risultato_1b_focus](../risorse/risultati/tappa1b_focus.png)
 
 #### PRIMA MOSSA:
-Al primo click del tasto sinistro del mouse su una cella coperta qualsiasi, dovrebbe partire sempre una rivelazione a catena. <br> <br>
-Allego uno screenshot del risultato da me ottenuto:
+- Al primo click del tasto sinistro del mouse su una cella coperta qualsiasi, dovrebbe partire sempre una rivelazione a catena. <br> <br> Allego uno screenshot del risultato da me ottenuto:
 ![risultato_1b_primoClick](../risorse/risultati/tappa1b_primoClick.png)
 
 #### RIVELAZIONE CELLA:
-Dopo la prima mossa, ogni click del tasto sinistro del mouse su una cella coperta dovrebbe portare alla rivelazione di detta cella: 
-- se detta cella fosse cell_type Number, detto numero dovrebbe corrispondere al numero di mine adiacenti alla cella; 
-- se detta cella fosse cell_type Empty dovrebbe partire una rivelazione a cascata;
-- se detta cella fosse cell_type Mine, la cella dovrebbe cambiare texture in Exploded_Mine_texture; <br> <br>
+- Dopo la prima mossa, ogni click del tasto sinistro del mouse su una cella coperta dovrebbe portare alla rivelazione di detta cella: 
+    * se detta cella fosse cell_type Number, detto numero dovrebbe corrispondere al numero di mine adiacenti alla cella; 
+    * se detta cella fosse cell_type Empty dovrebbe partire una rivelazione a cascata;
+    * se detta cella fosse cell_type Mine, la cella dovrebbe cambiare texture in Exploded_Mine_texture; <br> <br>
 Allego uno screenshot del risultato da me ottenuto:  
 ![risultato_1b_reveal](../risorse/risultati/tappa1b_reveal.png)
 

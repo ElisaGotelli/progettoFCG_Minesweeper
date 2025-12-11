@@ -19,11 +19,12 @@ Rispetto alla tappa precedente:
 ## VERIFICA DEL RISULTATO: 
 #### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato
 #### INIZIO PARTITA: 
-Appena aperta la finestra (o appena prima dell'inizio di una nuova partita), l'header dovrebbe presentare: 
-- la rappresentazione con tre oggetti Number del numero 000 per il timer;
-- la faccina con la texture di default (smile_face_texture);
-- la rappresentazione con tre oggetti Number del numero 015 per il contatore (cioè il numero di mine nella griglia); <br>
-Non dovrebbe essere possibile incrementare/decrementare il contatore bandierine o far partire il timer prima della prima mossa della partita. <br><br>
+- Appena aperta la finestra (o appena prima dell'inizio di una nuova partita), l'header dovrebbe presentare: 
+    * la rappresentazione con tre oggetti Number del numero 000 per il timer;
+    * la faccina con la texture di default (smile_face_texture);
+    * la rappresentazione con tre oggetti Number del numero 015 per il contatore (cioè il numero di mine nella griglia); 
+<br>
+- Non dovrebbe essere possibile incrementare/decrementare il contatore bandierine o far partire il timer prima della prima mossa della partita. <br><br>
 Allego uno screenshot del risultato da me ottenuto:
 ![risultato_dueb_inizio](../risorse/risultati/tappa2b_inizio.png)
 

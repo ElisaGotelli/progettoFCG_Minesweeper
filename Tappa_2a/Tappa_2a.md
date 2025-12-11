@@ -8,23 +8,23 @@ Implementare la grafica per un'intestazione per il pannello di gioco e dei suoi 
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente:
-- sono state definite le struct (con le loro funzioni draw(), parametri e i loro costruttori) per rappresentare: 
+- sono state definite le struct (con le loro funzioni draw(), campi e i loro costruttori) per rappresentare: 
     * un singolo numero (Number); 
     * il contatore di bandierine (Flag_Counter) composto da tre Number; 
     * la faccina (Face);
     * il timer di gioco (Timer) composto da tre Number; 
     * la struttura contenente tutti gli elementi elencati precedentemente (Header); 
-- è stato aggiunto l'header all'interno della struct Game_Panel;
-- sono state definite delle nuove costanti globali contenenti le caratteristiche di colore e del bordo dell'header; 
-- è stata modificato in modo che venga preso in considerazione l'header il: 
-    * calcolo della cell_size nel costruttore della struct Game_Panel;
-    * calcolo della Grid_pos.y nel costruttore della struct Grid;
+- è stato aggiunto l'oggetto Header all'interno della struct Game_Panel;
+- sono state definite delle nuove costanti globali contenenti le caratteristiche di colore e del bordo del nuovo oggetto Header;  
+- è stata modificato in modo che venga preso in considerazione il nuovo oggetto Header il: 
+    * calcolo del campo cell_size nel costruttore della struct Game_Panel;
+    * calcolo del campo Grid_pos.y nel costruttore della struct Grid;
 
 ## VERIFICA DEL RISULTATO: 
-All'apertura della finestra, dovrebbe comparire esattamente al di sopra della griglia di gioco un rettangolo grigio con bordo nero (Header) contenente:
-- a sinistra tre numeri zero (corrispondenti al Timer);
-- al centro una faccina sorridente (corrispodnente a Face);
-- a destra tre numeri zero (corrispondenti al Flag Counter);
+- All'apertura della finestra, dovrebbe comparire esattamente al di sopra della griglia di gioco un rettangolo grigio con bordo nero (Header) contenente:
+    * a sinistra tre numeri zero (corrispondenti al Timer);
+    * al centro una faccina sorridente (corrispodnente a Face);
+    * a destra tre numeri zero (corrispondenti al Flag Counter);
 <br><br>
 Allego uno screenshot del risultato da me ottenuto:  
 ![risultato_duea](../risorse/risultati/tappa2a.png)

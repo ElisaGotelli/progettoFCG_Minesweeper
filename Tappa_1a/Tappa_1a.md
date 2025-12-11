@@ -9,7 +9,7 @@ Impostare la grafica:
 Rispetto alla tappa precedente:
 - è stato impostato un nuovo colore di sfondo per la finestra (verde chiaro).
 - è stato creato un bordo per la finestra tramite la definizione di una RectangleShape di dimensioni leggermente ridotte rispetto alla finestra, posizione di orgine leggermente spostata rispetto alla finestra, colore trasparente e bordo spesso quanto la differenza di dimensione tra finestra e la shape appena creata (cioè 15 pixel).
-- sono state definite le struct (con le loro funzioni draw(), parametri e i loro costruttori) per rappresentare: 
+- sono state definite le struct (con le loro funzioni draw(), campi e i loro costruttori) per rappresentare: 
     * la griglia (Grid); 
     * le celle (Cell); 
     * il pannello di gioco (Game Panel); 
