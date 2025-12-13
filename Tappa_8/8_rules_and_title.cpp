@@ -378,7 +378,7 @@ struct State
             sp(),
             game_panel({9,9}, 15, starting_gap), 
             stop_p(),
-            cp(game_panel.border, 15, diff), //MODIFICATO
+            cp(game_panel.border, 15, diff), //MODIFICATO: inserita la difficoltà di gioco nel costruttore del Control_Panel
             focus(false), 
             first_move(true),
             mouse_cell(-1), 

@@ -1,27 +1,17 @@
 # TAPPA 7B - PULSANTE DI USCITA INTERATTIVO
 
 ## OBBIETTIVO DELLA TAPPA: 
-Rendere interattivo il pulsante ESCI nei vari pannelli, permettendo all'utente di abbandonare la partita in corso e tornare alla schermata iniziale del menu principale.
+Rendere interattivo il pulsante ESCI nei vari pannelli in modo che permetta quando cliccato di lasciare la schermata di gioco e tornare a quella iniziale.
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente: 
-- è stata implementata la funzione State::exit() che si occupa di resettare lo stato della partita e rendere nuovamente visibile lo Start_Panel.
-- sono state modificate le funzioni per la gestione degli eventi di: click di un pulsante e movimento del mouse in modo che gestiscano anche il nuovo pulsante creato.
-
-## ISTRUZIONI PER ESEGUIRE DA TERMINALE: 
-Prima di poter scrivere questo comando su terminale, bisogna aver: 
-- creato la cartella build 
-- configurato tramite cmake 
-- compilato con make 
-
-```bash
-cd build 
-./Tappa7b
-```
+- è stata implementata la funzione exit() nella struct State. Tale funzione rende nuovamente visibile lo Start_Panel e invoca il metodo reset(), permettendo il reset della schermata di gioco e il ritorno alla schermata iniziale;
+- sono state modificate le funzioni per la gestione degli eventi di: 
+    * click di un tasto e movimento del mouse in modo che gestiscano anche il nuovo pulsante creato;
 
 ## VERIFICA DEL RISULTATO: 
 #### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato
-- Al passaggio del mouse sopra al pulsante ESCI (sia nel Control Panel che negli Stop Panel di tipo Pause, Win e Lose), si dovrebbe azionare lo stesso effetto di focus presente anche per il gli altri pulsanti. <br><br>
+- Al passaggio del mouse sopra al pulsante ESCI (sia nel Control Panel che negli Stop Panel di tipo Pause, Win e Lose), si dovrebbe avere la stessa animazione di focus degli altri pulsanti di gioco. <br><br>
 Allego gli screenshot dei risultati da me ottenuti:  
 ![risultato_setteb_control](../risorse/risultati/tappa7b_control.png)
 ![risultato_setteb_pausa](../risorse/risultati/tappa7b_pausa.png)

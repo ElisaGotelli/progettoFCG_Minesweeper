@@ -21,13 +21,24 @@ Rispetto alla tappa precedente:
     * click di un tasto sulla tastiera in modo che non provochi più il cambio di schermata dalla iniziale (Start_Panel) a quella di gioco ma gestisca solo il rinizio di una partita in caso di pausa; 
  
 ## VERIFICA DEL RISULTATO: 
-#### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato
 #### START PANEL
 - All'apertura della finestra, nello Start Panel, al posto del testo 'Premere ENTER per cominciare una nuova partita', dovrebbero apparire tre nuovi pulsanti per la scelta della difficoltà della partita che si andrà a giocare. <br><br>
 Allego uno screenshot del risultato da me ottenuto:  
 ![risultato_sei_start](../risorse/risultati/tappa6_start.png)
 
-- Cliccando su uno dei pulsanti per la scelta della difficoltà, la schermata iniziale (Start_Panel) dovrebbe essere sostituita con quella di gioco nella modalità scelta, quindi:
+#### PANNELLI IN GENERALE: 
+- Cliccando il pulsante NUOVA PARTITA (dal Control Panel o dagli Stop Panel), dovrebbe comparire il menu di scelta difficoltà (Stop Panel tipo New_Game) che permette di scegliere la difficoltà di gioco per la nuova partita.<br><br>
+Allego uno screenshot del risultato da me ottenuto:  
+![risultato_sei_pannelli](../risorse/risultati/tappa6_pannelli.png)
+
+- I tre nuovi pulsanti creati (FACILE, MEDIO, DIFFICILE) al passaggio del mouse, dovrebbero avere la stessa animazione di focus degli altri pulsanti di gioco.
+<br><br>
+Allego degli screenshot dei risultati da me ottenuti:  
+![risultato_sei_feasy](../risorse/risultati/tappa6_feasy.png)
+![risultato_sei_fmedium](../risorse/risultati/tappa6_fmedium.png)
+![risultato_sei_fhard](../risorse/risultati/tappa6_fhard.png)
+
+- Cliccando su uno dei pulsanti per la scelta della difficoltà, la schermata iniziale (Start_Panel) o la schermata di gioco con visibile il pannello di stop per la scelta della difficoltà di gioco (Stop_Panel di tipo New_Game) dovrebbe essere sostituita con quella di gioco nella modalità scelta, quindi:
     * FACILE: griglia 9x9 e 15 mine. 
     * MEDIO: griglia 16x16 e 40 mine. 
     * DIFFICILE: griglia 30x20 e 99 mine. <br><br>
@@ -38,12 +49,6 @@ MEDIO:
 ![risultato_sei_medio](../risorse/risultati/tappa6_medio.png)
 DIFFICILE:
 ![risultato_sei_difficile](../risorse/risultati/tappa6_difficile.png)
-
-#### PANNELLI:
-- Cliccando il pulsante NUOVA PARTITA (dal Control Panel o dagli Stop Panel), dovrebbe comparire il menu di scelta difficoltà (Stop Panel tipo New_Game) che permette di scegliere la difficoltà di gioco per la nuova partita.<br><br>
-Allego uno screenshot del risultato da me ottenuto:  
-![risultato_sei_pannelli](../risorse/risultati/tappa6_pannelli.png)
-
 
 ## PROBLEMI RISCONTRATI E SOLUZIONI: 
 #### PROBLEMA 
