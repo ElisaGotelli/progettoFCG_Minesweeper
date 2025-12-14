@@ -26,5 +26,5 @@ Per il progetto sono state sviluppate 14, in cui:
 - ogni tappa, come richiesto, presenta, oltre al file di codice, un file di documentazione che spiega nel dettaglio la tappa in analisi. <br>
 In particolare, nella sezione 'Problemi riscontrati e soluzioni' di dette documentazioni sono stati riportati i problemi riscontrati (segnati nei vari file di documentazione), essi sono solo i problemi che hanno richiesto maggior tempo per essere risolti. Per i problemi minori, risolti velocemente tramite piccole modifiche, sono stati utilizzati dei commenti nel codice con la scritta 'MODIFICATO';
 
-## RISORSE UTILIZZATE: 
+## RISORSE CODICE UTILIZZATE: 
 Come risorse esterne di codice sono stati utilizzati solamente i laboratori e i file di codice sviluppati in classe insieme al professore Puppo (in particolare il codice del Laboratorio 3).
