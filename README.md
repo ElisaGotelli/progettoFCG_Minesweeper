@@ -28,3 +28,6 @@ In particolare, nella sezione 'Problemi riscontrati e soluzioni' di dette docume
 
 ## RISORSE CODICE UTILIZZATE: 
 Come risorse esterne di codice sono stati utilizzati solamente i laboratori e i file di codice sviluppati in classe insieme al professore Puppo (in particolare il codice del Laboratorio 3).
+
+## AUTORE PROGETTO: 
+Gotelli Elisa (S5666586).
