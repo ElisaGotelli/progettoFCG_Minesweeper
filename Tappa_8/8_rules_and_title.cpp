@@ -778,7 +778,7 @@ void Control_Panel::draw (sf::RenderWindow& window){
             break; 
 
         case Difficulty::medium: 
-            control_text.setString("Difficolta' scelta :\tMEDIA \nTotale mine nella griglia :\t" + to_string(control_info_mine));
+            control_text.setString("Difficolta' scelta :\tMEDIO \nTotale mine nella griglia :\t" + to_string(control_info_mine));
             break; 
 
         case Difficulty::hard: 
