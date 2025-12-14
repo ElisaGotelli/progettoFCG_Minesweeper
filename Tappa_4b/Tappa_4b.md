@@ -4,18 +4,18 @@
 - Rendere il Control Panel interattivo: 
     * sviluppare un meccanismo per cui quando viene cliccato il pulsante 'Nuova Partita' (button_type new_game) la schermata di gioco dovrà tornare allo stato di default;
     * sviluppare un meccanismo per cui quando viene cliccato il pulsante quando viene cliccato il pulsante 'Pausa' (button_type pause) la partita in corso dovrà essere messa in pausa;
-    * sviluppare un meccanismo per cui i pulsanti abbiano la stessa animazione di focus visivo (bordo rosso) delle celle;
-- Gestire la grafica e logica per la pausa del gioco.
+    * sviluppare un meccanismo per cui i pulsanti abbiano la stessa animazione di focus visivo (bordo rosso) delle celle.
+- Gestire la grafica e logica per la pausa del gioco;
 - Sviluppare nello Stop Panel un pulsante di 'Nuova Partita' al posto del testo 'premere ENTER per cominciare una nuova partita'.
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente: 
-- sono stati definiti/modificati diversi parametri, costruttori, funzioni (all'interno di diverse struct nel codice) e costanti globali per gestire correttamente le nuove funzionalità e grafiche di gioco. Ad esempio è stato implmentato un nuovo possibile tipo per la struct Stop_Panel nell'enum class stop_type (Pause), in modo da rendere possibile la rappresentazione del pannello di Pausa.
-- è stato aggiunto un nuovo oggetto Control_Button di tipo new_game nello Stop Panel per il reset della partita.
+- sono stati definiti/modificati diversi parametri, costruttori, funzioni (all'interno di diverse struct nel codice) e costanti globali per gestire correttamente le nuove funzionalità e grafiche di gioco. Ad esempio è stato implmentato un nuovo possibile tipo per la struct Stop_Panel nell'enum class stop_type (Pause), in modo da rendere possibile la rappresentazione del pannello di Pausa;
+- è stato aggiunto un nuovo oggetto Control_Button di tipo new_game nello Stop Panel per il reset della partita;
 - sono state modificate le funzione per la gestione degli eventi:
     * di perdita di focus per fare in modo che il gico venga automaticamente messo in pausa; 
     * di click/rilascio di un pulsante del mouse e movimento del mouse per gestire i vari Control_Button; 
-    * di click del pulsante SPACE su tastiera in modo che permetta di far ripartire la partita se essa è in pausa (Stop_Panel con stop_type Pause visibile);
+    * di click del pulsante SPACE su tastiera in modo che permetta di far ripartire la partita se essa è in pausa (Stop_Panel con stop_type Pause visibile).
 
 ## VERIFICA DEL RISULTATO: 
 #### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato

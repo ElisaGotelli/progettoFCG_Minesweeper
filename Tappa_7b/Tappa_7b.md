@@ -7,10 +7,10 @@ Rendere interattivo il pulsante ESCI nei vari pannelli in modo che permetta quan
 Rispetto alla tappa precedente: 
 - è stata implementata la funzione exit() nella struct State. Tale funzione rende nuovamente visibile lo Start_Panel e invoca il metodo reset(), permettendo il reset della schermata di gioco e il ritorno alla schermata iniziale;
 - sono state modificate le funzioni per la gestione degli eventi di: 
-    * click di un tasto e movimento del mouse in modo che gestiscano anche il nuovo pulsante creato;
+    * click di un tasto e movimento del mouse in modo che gestiscano anche il nuovo pulsante creato.
 
 ## VERIFICA DEL RISULTATO: 
-#### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato
+#### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato.
 - Al passaggio del mouse sopra al pulsante ESCI (sia nel Control Panel che negli Stop Panel di tipo Pause, Win e Lose), si dovrebbe avere la stessa animazione di focus degli altri pulsanti di gioco. <br><br>
 Allego gli screenshot dei risultati da me ottenuti:  
 ![risultato_setteb_control](../risorse/risultati/tappa7b_control.png)

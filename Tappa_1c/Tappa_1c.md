@@ -1,11 +1,11 @@
 # TAPPA 1C - VITTORIA, SCONFITTA E RESET PER UNA NUOVA PARTITA 
 
-## OBBIETTIVO DELLA TAPPA: 
-Rendere la versione base del gioco completa e realmente giocabile, cioè: 
+## OBBIETTIVO DELLA TAPPA:
+Rendere la versione base del gioco completa e realmente giocabile, cioè:
 - gestire le condizioni e grafica per la vittoria (condizione: sono state scoperte tutte le celle nella griglia tranne quelle con nascosta una mina) e sconfitta (condizione: è stata scoperta una cella con nascosta una mina);
-- permettere il riavvio di una partita; 
+- permettere il riavvio di una partita.
 
-## COSA È STATO IMPLEMENTATO: 
+## COSA È STATO IMPLEMENTATO:
 Rispetto alla tappa precedente:
 - è stata definita la struct (con la sua funzione draw(), campi e costruttore) per rappresentare il pannello di fine partita (Stop_Panel);
 - sono stati definiti/modificati diversi parametri, costruttori e funzioni (all'interno delle varie struct) e costanti globali per gestire correttamente le nuove funzionalità e grafiche di gioco. Ad esempio è stata implmentata la funzione ending_reveal nella struct State per gestire la rivelazione di tutte le celle con cell_type Mine alla fine di una partita; 

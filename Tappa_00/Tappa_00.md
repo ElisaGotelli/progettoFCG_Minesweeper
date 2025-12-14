@@ -5,16 +5,16 @@ Creazione della finestra di rendering principale e implementazione del Game Loop
 
 ## COSA È STATO IMPLEMENTATO: 
 - La finestra è stata configurata con:
-    * Titolo: Base Window 
-    * Proporzioni: 800x600 
-    * Limite di frame: 60 FPS
-    * Sfondo: nero
-- Gli eventi sono stati gestiti tramite la funzione window.handleEvents. 
+    * Titolo: Base Window;
+    * Proporzioni: 800x600;
+    * Limite di frame: 60 FPS;
+    * Sfondo: nero.
+- Gli eventi sono stati gestiti tramite la funzione window.handleEvents;
 - È stata implementata una logica che forza il mantenimento delle proporzioni originali (4:3) nel caso l'utente cerchi di ridimensionare la finestra manualmente per evitare distorsioni grafiche del contenuto.
 
-## VERIFICA DEL RISULTATO: 
+## VERIFICA DEL RISULTATO:
 All'avvio dell'esecuzione, dovrebbe essere mostrata su schermo una finestra nera di dimensioni 800x600 e con titolo "Base Window".
-- Provando a ridimensionare la finestra, il contenuto dovrebbe adattarsi mantenendo le proporzioni 4:3.
+- Provando a ridimensionare la finestra, il contenuto dovrebbe adattarsi mantenendo le proporzioni 4:3;
 - Cliccando il pulsante di uscita dalla finestra ("X" in alto a sinistra) il programma dovrebbe terminare. <br><br>
 
 Allego uno screenshot del risultato da me ottenuto:  

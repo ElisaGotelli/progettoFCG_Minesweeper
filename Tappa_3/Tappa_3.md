@@ -7,16 +7,16 @@ Completare la grafica del pannello di gioco (Game_Panel) implementando un bordo 
 Rispetto alla tappa precedente: 
 - sono state definite le struct (con le loro funzioni draw(), campi e i loro costruttori) per rappresentare: 
     * le celle che costituiscono il bordo (Border_Cell); 
-    * il bordo stesso (Border); 
+    * il bordo stesso (Border).
 - è stato aggiunto l'oggetto Border all'interno della struct Game_Panel; 
 - è stata modificato in modo che venga preso in considerazione il nuovo oggetto Border il: 
     * calcolo del campo cell_size nel costruttore della struct Game_Panel;
-    * calcolo del campo Grid_pos.y nel costruttore della struct Grid;
+    * calcolo del campo Grid_pos.y nel costruttore della struct Grid.
 
 ## VERIFICA DEL RISULTATO: 
 All'apertura della finestra dovrebbe essere visibile un bordo grigio che circonda la griglia di celle e l'header con queste caratteristiche: <br>
 - Il bordo non dovrebbe essere interagibile; 
-- Il bordo non dovrebbe andare a coprire l'animazione di focus delle celle; <br><br>
+- Il bordo non dovrebbe andare a coprire l'animazione di focus delle celle. <br><br>
 Allego uno screenshot del risultato da me ottenuto:
 ![risultato_tre](../risorse/risultati/tappa3.png)
 
@@ -26,9 +26,9 @@ L'ordine di disegno iniziale (prima grid poi border) nella funzione draw() della
 
 #### SOLUZIONE: 
 È stato invertito l'ordine di disegno in Game_Panel in questo modo: 
-- Border 
-- Header 
-- Grid 
+- Border;
+- Header;
+- Grid.
 In questo modo, l'animazione di focus delle celle al passaggio del mouse rimane sempre in primo piano.
 
 #### PROBLEMA: 
@@ -37,7 +37,7 @@ Tuttavia questa tipologia di implmentazione risultava molto complessa e comporta
 
 #### SOLUZIONE: 
 Si è optato per la creazione di soli 8 oggetti Border_Cell fondamentali:
-- 4 Angolari (angle_cells): Quadrati che corrispondono ai vertici del bordo.
+- 4 Angolari (angle_cells): Quadrati che corrispondono ai vertici del bordo;
 - 4 Laterali (side_cells): Rettangoli che si adattano dinamicamente per coprire l'intera lunghezza/altezza tra i quattro angle_cells.<br>
 
 

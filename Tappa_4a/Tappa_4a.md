@@ -5,16 +5,16 @@ Implementare la grafica per un pannello di controllo che:
 - dovrà essere posizionato alla sinistra della griglia di gioco; 
 -dovrà per ora contenere solo due pulsanti:
     * un pulsante per mettere in pausa la partita; 
-    * un pulsante per iniziare una nuova partita;
+    * un pulsante per iniziare una nuova partita.
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente: 
 - sono state definite le struct (con le loro funzioni draw(), campi e i loro costruttori) per rappresentare: 
     * dei pulsanti per i vari pannelli del gioco che in futuro consentiranno quando cliccati l'esecuzione automatica di diverse azioni(Control_Button);
     * il pannello di controllo contenente detti pulsanti (Control_Panel):
-- sono state definite delle nuove costanti globali contenenti le caratteristiche di colore, testo, posizionamento, tipo, spessore e dimensione dei nuovi oggetti Control_Button e Control_Panel;
+- sono state definite delle nuove costanti globali contenenti le caratteristiche di colore, testo, posizionamento, tipo, spessore e la dimensione dei nuovi oggetti Control_Button e Control_Panel;
 - sono stati ridotti i valori delle costanti 'window_horizontal_displacement' e 'window_vertical_displacement' per avere una migliore visibilità del Game_Panel e Control_Panel;
-- è stato modificato calcolo del campo cell_size nel costruttore della struct Game_Panel in modo che consideri ora la larghezza della finestra invece dell'altezza;
+- è stato modificato calcolo del campo cell_size nel costruttore della struct Game_Panel in modo che consideri ora la larghezza della finestra invece dell'altezza.
 
 ## VERIFICA DEL RISULTATO: 
 #### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato

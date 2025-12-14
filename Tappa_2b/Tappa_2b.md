@@ -1,10 +1,10 @@
-# TAPPA 2B - HEADER INTERATTIVO 
+# TAPPA 2B - HEADER INTERATTIVO
 
-## OBBIETTIVO DELLA TAPPA: 
-Rendere l'header interattivo: 
-- sviluppare un meccanismo per cui al piazzamento/rimozione di una bandierina nella griglia, il contatore di bandierine cambi di valore di conseguenza; 
-- sviluppare un meccanismo in modo che la texture della faccina cambi in base agli eventi che avvengono durante la partita (click del tasto sinistro del mouse, vittoria, sconfitta); 
-- sviluppare un meccanismo in modo che i numeri del Timer cambino in modo da rappresentare sempre i secondi reali di gioco e che il tempo totale di una partita finita venga mostrato nel pannello di fine partita; 
+## OBBIETTIVO DELLA TAPPA:
+Rendere l'header interattivo:
+- sviluppare un meccanismo per cui al piazzamento/rimozione di una bandierina nella griglia, il contatore di bandierine cambi di valore di conseguenza;
+- sviluppare un meccanismo in modo che la texture della faccina cambi in base agli eventi che avvengono durante la partita (click del tasto sinistro del mouse, vittoria, sconfitta);
+- sviluppare un meccanismo in modo che i numeri del Timer cambino in modo da rappresentare sempre i secondi reali di gioco e che il tempo totale di una partita finita venga mostrato nel pannello di fine partita.
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente: 
@@ -14,7 +14,7 @@ Rispetto alla tappa precedente:
 - è stata definita una nuova funzione handle per gestire il rilascio del pulsante sinistro del mouse in modo da far tornare la faccina allo texture di default (smile_face_texture);
 - sono state modificate le funzioni handle per: 
     * la perdita e ripresa del focus in modo da bloccare o far ripartire il timer di gioco;
-    * il click di un tasto del mouse per aggiornare correttamente la texture della faccina a quella di click (Click_face_texture);
+    * il click di un tasto del mouse per aggiornare correttamente la texture della faccina a quella di click (Click_face_texture).
 
 ## VERIFICA DEL RISULTATO: 
 #### N.B: Le frecce nelle foto sono per indicare un particolare del risultato (tipo la cella considerata per quella verifica di risultato). Non devono comparire nel risultato
@@ -22,7 +22,7 @@ Rispetto alla tappa precedente:
 - Appena aperta la finestra (o appena prima dell'inizio di una nuova partita), l'header dovrebbe presentare: 
     * la rappresentazione con tre oggetti Number del numero 000 per il timer;
     * la faccina con la texture di default (smile_face_texture);
-    * la rappresentazione con tre oggetti Number del numero 015 per il contatore (cioè il numero di mine nella griglia); 
+    * la rappresentazione con tre oggetti Number del numero 015 per il contatore (cioè il numero di mine nella griglia).
 <br>
 - Non dovrebbe essere possibile incrementare/decrementare il contatore bandierine o far partire il timer prima della prima mossa della partita. <br><br>
 Allego uno screenshot del risultato da me ottenuto:

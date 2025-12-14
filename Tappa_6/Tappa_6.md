@@ -3,14 +3,14 @@
 ## OBBIETTIVO DELLA TAPPA: 
 Implementare i restanti due livelli di difficoltà del gioco in modo che vi siano tre livelli di difficoltà totali di gioco: <br>
 - FACILE: 
-    * dimensione griglia: 9x9 celle
-    * numero mine: 15 
+    * dimensione griglia: 9x9 celle;
+    * numero mine: 15.
 - MEDIO: 
-    * dimensione griglia: 16x16 celle
-    * numero mine: 40
+    * dimensione griglia: 16x16 celle;
+    * numero mine: 40.
 - DIFFICILE: 
-    * dimensione griglia: 30x20 celle
-    * numero mine: 99 
+    * dimensione griglia: 30x20 celle;
+    * numero mine: 99. <br>
 Implementare, inoltre, un meccanismo che permetta di selezionare la difficoltà desiderata direttamente dalla schermata iniziale.
 
 ## COSA È STATO IMPLEMENTATO: 
@@ -18,7 +18,7 @@ Rispetto alla tappa precedente:
 - sono stati definiti/modificati diversi parametri, costruttori, funzioni (all'interno di diverse struct nel codice) e costanti globali per gestire correttamente le nuove funzionalità e grafiche di gioco. Ad esempio, è stato modificato il campo h_size.y della struct Header (che corrisponde all'altezza dell'header) in modo che sia sempre un valore fisso un'altezza fissa (indipendentemente dalla modalità di gioco scelta e quindi dalla grandezza delle celle nella griglia) per garantirne sempre una buona leggibilità;
 - sono state modificate le funzioni per la gestione degli eventi di: 
     * click di un tasto e movimento del mouse in modo che gestisca anche i nuovi tre pulsanti creati per la scelta della difficoltà di gioco (FACILE, MEDIO e DIFFICILE); 
-    * click di un tasto sulla tastiera in modo che non provochi più il cambio di schermata dalla iniziale (Start_Panel) a quella di gioco ma gestisca solo il rinizio di una partita in caso di pausa; 
+    * click di un tasto sulla tastiera in modo che non provochi più il cambio di schermata dalla iniziale (Start_Panel) a quella di gioco ma gestisca solo il rinizio di una partita in caso di pausa.
  
 ## VERIFICA DEL RISULTATO: 
 #### START PANEL
@@ -39,8 +39,8 @@ Allego degli screenshot dei risultati da me ottenuti:
 ![risultato_sei_fhard](../risorse/risultati/tappa6_fhard.png)
 
 - Cliccando su uno dei pulsanti per la scelta della difficoltà, la schermata iniziale (Start_Panel) o la schermata di gioco con visibile il pannello di stop per la scelta della difficoltà di gioco (Stop_Panel di tipo New_Game) dovrebbe essere sostituita con quella di gioco nella modalità scelta, quindi:
-    * FACILE: griglia 9x9 e 15 mine. 
-    * MEDIO: griglia 16x16 e 40 mine. 
+    * FACILE: griglia 9x9 e 15 mine;
+    * MEDIO: griglia 16x16 e 40 mine;
     * DIFFICILE: griglia 30x20 e 99 mine. <br><br>
 Allego degli screenshot dei risultati da me ottenuti:<br>
 FACILE:

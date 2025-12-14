@@ -12,7 +12,7 @@ Rispetto alla tappa precedente:
 - sono state modificate le funzione per la gestione degli eventi:
     * perdita di focus in modo che lo Stop_Panel con stop_type Pause non diventi visibile nel caso lo Start_Panel sia ancora visibile;
     * di click del tasto SPACE sulla tastiera in modo che tolga la visibilità allo Start_Panel e renda visibile la schermata di gioco; 
-    * di click di un tasto e movimento del mouse in modo che non provochino nessuna azione se lo Start_Panel è visibile; 
+    * di click di un tasto e movimento del mouse in modo che non provochino nessuna azione se lo Start_Panel è visibile.
 
 ## VERIFICA DEL RISULTATO: 
 - All'apertura della finestra non dovrebbe più apparire di default la schermata di gioco ma la schermata iniziale (Start_Panel). <br><br>

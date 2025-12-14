@@ -2,19 +2,19 @@
 
 ## OBBIETTIVO DELLA TAPPA: 
 Rendere le celle interattive:
-- sviluppare un meccanismo di focus per le celle al passaggio del mouse
-- sviluppare i meccanismi di rivelazione di una cella, di rivelazione a cascata (flood reveal) e che la prima mossa porti sempre ad una rivelazione a cascata
-- sviluppare i meccanismi di posizionamento/rimozione di una bandierina
+- sviluppare un meccanismo di focus per le celle al passaggio del mouse;
+- sviluppare i meccanismi di rivelazione di una cella, di rivelazione a cascata (flood reveal) e che la prima mossa porti sempre ad una rivelazione a cascata;
+- sviluppare i meccanismi di posizionamento/rimozione di una bandierina.
 
 ## COSA È STATO IMPLEMENTATO: 
 Rispetto alla tappa precedente:
 - è stato sviluppato un file [textures_fonts.hpp](../risorse/textures_fonts.hpp) per la gestione di tutte le texture e font che verranno utilizzati nel progetto;
 - sono stati definiti/modificati diversi parametri, costruttori e funzioni (all'interno delle varie struct) e costanti globali per gestire correttamente le nuove funzionalità e grafiche di gioco. Ad esempio è stata definita la funzione reveal nella struct State per l'implementazione della rivelazione automatica di una cella con texture Covered;
-- sono state implementate diverse funzioni handle per la gestione degli eventi di: 
+- sono state implementate diverse funzioni handle per la gestione degli eventi di:
     * click di un pulsante del mouse (click sinistro: rivelazione cella o rivelazione a catena; destro: posizionamento/rimozione bandierina);
     * movimento del mouse (nel caso il mouse sia sopra ad una cella, il bordo di detta cella diventi rosso);
-    * perdita/presa focus della finestra; 
-    * eventi non programmati; 
+    * perdita/presa focus della finestra;
+    * eventi non programmati.
 
  ##### CASO PARTICOLARE PRIMA MOSSA:
 Come da regole di gioco è stato fatto in modo che la prima cella rivelata della partita sia sempre di tipo cell_type Empty e che le celle adiacenti non abbiano cell_type Mine. In questo modo, la prima mossa porterà sempre all'esecuzione di flood_reveal (rivelazione a catena). <br>
@@ -39,7 +39,7 @@ Allego uno screenshot del risultato da me ottenuto:
 ![risultato_1b_reveal](../risorse/risultati/tappa1b_reveal.png)
 
 #### BANDIERINA: 
-- Al click del tasto destro del mouse su una cella coperta dovrebbe apparire una bandierina.
+- Al click del tasto destro del mouse su una cella coperta dovrebbe apparire una bandierina;
 - Al click del atsto destro del mouse su una cella con bandierina, la bandierina dovrebbe sparire. <br> <br>
 Allego uno screenshot del risultato da me ottenuto:  
 ![risultato_1b_flag](../risorse/risultati/tappa1b_flag.png)
