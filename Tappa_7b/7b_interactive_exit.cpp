@@ -1065,6 +1065,8 @@ void handle (const sf::Event::FocusGained&, State& state)
 
 void handle (const sf::Event::FocusLost&, State& state)
 {
+    state.focus = false;
+
     if(state.sp.visible) return;
     if(!state.game_ended){
         state.pause();
@@ -1073,7 +1075,6 @@ void handle (const sf::Event::FocusLost&, State& state)
             state.game_panel.header.face.face_texture = &smile_face_texture; 
         }
     }
-    state.focus = false;
 }
 
 void handle_mouse_pressed (const sf::Event::MouseButtonPressed& mouse, sf::RenderWindow& window, State& state)

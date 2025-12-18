@@ -968,6 +968,8 @@ void handle (const sf::Event::FocusGained&, State& state)
 
 void handle (const sf::Event::FocusLost&, State& state)
 {
+    state.focus = false;
+    
     if(state.sp.visible) return; //AGGIUNTA: se la schermata iniziale è ancora visibile non fare nulla in quanto il gioco non è ancora iniziato
     
     if(!state.game_ended){
@@ -977,7 +979,6 @@ void handle (const sf::Event::FocusLost&, State& state)
             state.game_panel.header.face.face_texture = &smile_face_texture; 
         }
     }
-    state.focus = false;
 }
 
 void handle_mouse_pressed (const sf::Event::MouseButtonPressed& mouse, sf::RenderWindow& window, State& state)
